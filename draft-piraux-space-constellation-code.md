@@ -9,19 +9,19 @@ number:
 date:
 consensus: true
 v: 3
-area: AREA
-workgroup: WG Working Group
+area: "IRTF"
+workgroup: "Systems and Protocol Aspects for Circumstellar Environments Proposed RG"
 keyword:
  - next generation
  - unicorn
  - sparkling distributed ledger
 venue:
-  group: WG
-  type: Working Group
-  mail: WG@example.com
-  arch: https://example.com/WG
-  github: USER/REPO
-  latest: https://example.com/LATEST
+  group: "Systems and Protocol Aspects for Circumstellar Environments Proposed RG"
+  type: "Research Group"
+  mail: "space@irtf.org"
+  arch: "https://mailarchive.ietf.org/arch/browse/space/"
+  github: "mpiraux/draft-piraux-space-constellation-code"
+  latest: "https://mpiraux.github.io/draft-piraux-space-constellation-code/draft-piraux-space-constellation-code.html"
 
 author:
  -
