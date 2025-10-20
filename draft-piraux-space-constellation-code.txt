@@ -2,10 +2,10 @@
 
 
 
-WG Working Group                                              Y. N. Here
-Internet-Draft                                    Your Organization Here
-Intended status: Informational                           13 October 2025
-Expires: 16 April 2026
+Systems and Protocol Aspects for Circumstellar Environments RG M. Piraux
+Internet-Draft                                              Aerospacelab
+Intended status: Informational                           20 October 2025
+Expires: 23 April 2026
 
 
               A code to describe satellite constellations
@@ -13,23 +13,32 @@ Expires: 16 April 2026
 
 Abstract
 
-   TODO Abstract
+   When considering a satellite constellation forming a non-terrestrial
+   network, the characteristics of this constellation heavily influences
+   the network topology it forms.  To improve the analysis of such non-
+   terrestrial networks across various tools developed by the network
+   community, this document proposes a notation to describe common
+   constellation patterns.  In addition, this document may serve as an
+   introduction to satellite constellations for IETF participants.
 
 About This Document
 
    This note is to be removed before publishing as an RFC.
 
    The latest revision of this draft can be found at
-   https://example.com/LATEST.  Status information for this document may
-   be found at https://datatracker.ietf.org/doc/draft-piraux-space-
-   constellation-code/.
+   https://mpiraux.github.io/draft-piraux-space-constellation-code/
+   draft-piraux-space-constellation-code.html.  Status information for
+   this document may be found at https://datatracker.ietf.org/doc/draft-
+   piraux-space-constellation-code/.
 
-   Discussion of this document takes place on the WG Working Group
-   mailing list (mailto:WG@example.com), which is archived at
-   https://example.com/WG.
+   Discussion of this document takes place on the Systems and Protocol
+   Aspects for Circumstellar Environments RG Research Group mailing list
+   (mailto:space@irtf.org), which is archived at
+   https://mailarchive.ietf.org/arch/browse/space/.  Subscribe at
+   https://www.ietf.org/mailman/listinfo/space/.
 
    Source for this draft and an issue tracker can be found at
-   https://github.com/USER/REPO.
+   https://github.com/mpiraux/draft-piraux-space-constellation-code.
 
 Status of This Memo
 
@@ -46,7 +55,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 16 April 2026.
+   This Internet-Draft will expire on 23 April 2026.
 
 Copyright Notice
 
@@ -63,15 +72,56 @@ Table of Contents
 
    1.  Introduction
    2.  Conventions and Definitions
-   3.  Security Considerations
-   4.  IANA Considerations
-   5.  Normative References
+   3.  Satellite constellations
+     3.1.  Walker constellations
+       3.1.1.  Walker Star
+       3.1.2.  Walker Delta
+   4.  Constellation code
+   5.  Examples of constellations codes
+   6.  Security Considerations
+   7.  IANA Considerations
+   8.  References
+     8.1.  Normative References
+     8.2.  Informative References
    Acknowledgments
    Author's Address
 
 1.  Introduction
 
-   TODO Introduction
+   The network topology of a satellite constellation is heavily
+   influenced by its orbital characteristics.  Given the position of
+   each satellite within the constellation, a network is formed by
+   establishing links between neighbour satellites.  A common notation
+   for the network community could improve the reproducibility of
+   evaluations, measurements and simulations of satellite constellation
+   networks.
+
+   The true position of a satellite is often represented using a Two-
+   Line Element set (TLE).  A TLE contains a number of fields describing
+   the orbital elements at a given time of a given satellite.  Combined
+   with a simplified perturbation model, the TLE can be used to predict
+   the future position and velocity of the satellite relatively
+   accurately.  However, when studying satellite constellations, TLEs
+   may not be appropriate.  First, they assume each satellite has a
+   known absolute position, which is derived from the launch time and
+   parameters.  Second, they involve complex calculations given the
+   chosen perturbation model which may not scale well to large-scale
+   experiments.
+
+   The approach of this document is based on the mission parameters of
+   satellite constellation.  Based on these parameters, the expected
+   position of each satellite within the constellation can then be
+   computed.  While this approach does not capture the small
+   discrepancies that can occur during the launch and operation of the
+   satellites, we argue that it is sufficient in our context.
+
+   The rest of this document is organised as follows.  Section 3
+   introduces two variants of the Walker pattern for orbital shells.
+   These are used to define many of the existing satellite
+   constellations.  Section 4 defines the constellation code syntax
+   using an ABNF grammar [RFC5234] and the code semantics.  Finally,
+   Section 5 contains examples of existing constellations defined using
+   the constellation code.
 
 2.  Conventions and Definitions
 
@@ -81,31 +131,220 @@ Table of Contents
    BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
-3.  Security Considerations
+3.  Satellite constellations
 
-   TODO Security
+   A constellation greatly improves the availability of a satellite
+   service up to global or near-global coverage on Earth.  From the user
+   perspective, a constellation offers more guarantees that a satellite
+   can be reached at all times.  A constellation is composed of a set of
+   orbital planes.  Typically, several satellites are present on an
+   orbital plane.  They can be close together to perform formation
+   flying or are equally spread within the plane.  Orbital planes are
+   distributed in a complementary manner, i.e., they share some
+   properties (e.g. altitude and inclination) but differ in others (e.g.
+   longitude of ascending node).
 
-4.  IANA Considerations
+   When all orbital planes of a constellation are circular orbits
+   sharing the same altitude, they are said to constitute an orbital
+   shell.  Constellations often consist of a single orbital shell but
+   more complex deployments can have several shells.
+
+   The rest of this section describes two common shells based on the
+   Walker pattern.
+
+3.1.  Walker constellations
+
+   A Walker constellation consists of circular orbits sharing the same
+   inclination.  Two variants of the Walker pattern exist:
+
+   *  Walker Star, where orbits are distributed over 180 degrees around
+      the equator.
+
+   *  Walker Delta, where orbits are distributed over 360 degrees around
+      the equator.
+
+3.1.1.  Walker Star
+
+   Figure 1 is an illustration of a Walker Star constellation
+   considering the Earth equator as horizontal in the Figure.  The orbit
+   trajectories are depicted by a dashed line, while satellites and
+   their travel direction are indicated by arrow heads.
+
+   The orbits of a Walker Star constellation often have an inclination
+   close to 90 degrees with respect to the equator plane.  Given that
+   they are distributed over 180 degrees around the equator plane, one
+   half-sphere has satellites ascending from the south pole to the north
+   pole while the other has them descending from north pole to south
+   pole.  This is depicted on the two sides of Figure 1.  Over the south
+   and north poles, all orbits are crossing paths before going over the
+   other half-sphere.
+
+   In a Walker Star constellation, a seam can be observed at the start
+   and end of the orbit distribution around the equator plane.  That is
+   the first orbit (resp. last orbit) is next to the last orbit (resp.
+   first orbit) going in the opposite direction of the sphere.  It can
+   be observed at the center of the Figure 1.  When communication
+   between satellites of neighbour orbits is desired, a Walker Star
+   pattern may not be suitable due to this effect.
+
+                                 /  / \  \
+                               , - ~ ~ ~ - ,
+                           , '/    ^   v    \' ,
+                         ,   ^    /     \    v  ,
+                        ,   /    ^       v    \   ,
+                       ,   ^     |       |     v   ,
+                       ,   |     ^       v     |   ,
+                       ,   ^     |       |     v   ,
+                        ,   \    ^       v    /   ,
+                         ,   ^   \       /   v   ,
+                           ,  \   ^     v   / , '
+                             ' - , _ _ _ ,  '
+                                 \  \ /  /
+
+                   Figure 1: A Walker Star constellation
+
+3.1.2.  Walker Delta
+
+   Figure 2 is an illustration of a Walker Delta constellation with two
+   orbits.  The orbits of a Walker Delta constellation often have an
+   inclination ranging from 45 to 65 degrees with respect to the equator
+   plane.  Combined with the altitude, the inclination directly limits
+   the latitude coverage of a constellation, while Walker Star
+   constellations have a complete latitude coverage.
+
+   Given that the orbits are distributed around the entire equator
+   plane, there is no seam effect as in the Walker Star pattern.
+   Instead, each orbit will cross paths twice with every other orbit.
+
+                           /   , - ~ ~ ~ - ,   \
+                           , '               ' ,
+                         ,   \                   ,
+                        ,      ^           /      ,
+                       ,         \        v        ,
+                       ,           ^   /           ,
+                       ,             \v            ,
+                        ,           /  ^          ,
+                         ,         v     \       ,
+                           ,    /             , '
+                             ' - , _ _ _ ,  '
+                             \               /
+
+                   Figure 2: A Walker Delta constellation
+
+4.  Constellation code
+
+   Figure 3 defines the constellation code using an ABNF grammar
+   [RFC5234].  The code can define a constellation with multiple shells.
+   Each shell can follow a Walker Star or Walker Delta pattern.
+
+   The code only considers circular orbits but future versions of this
+   document could extend it to include the apogee, perigee and argument
+   of the periapsis such that any elliptical orbit can be defined.
+
+       constellation = shell [ "+" constellation ]
+       shell = walker ":" altitude ":" inclination ":" plane-params
+       shell =/ [ ":" mean-anomaly ]
+       walker = "D" / "S"
+       altitude = float
+       inclination = float
+       plane-params = no-sats "/" no-planes "/" phasing-factor
+       no-sats = int
+       no-planes = int
+       phasing-factor = int
+       mean-anomaly = float
+
+       int = 1*DIGIT
+       float = 1*DIGIT [ "." 1*DIGIT ]
+       DIGIT = %x30-39
+
+             Figure 3: ABNF Grammar for the constellation code
+
+   In addition to the grammar presented above defining the syntax of the
+   code, a number of requirements on the semantics of the code are
+   listed below.
+
+   *  The altitude is expressed in kilometres with reference to the
+      Earth's surface.
+
+   *  The inclination is expressed in degrees and MUST be within the
+      range of [0, 90] degrees.
+
+   *  The number of satellites must be evenly divisible by the number of
+      planes.
+
+   *  The phasing factor must be within [0, no-planes[.
+
+   *  The mean anomaly is expressed in degrees and MUST be within the
+      range of [0, 360] degrees.  It is optional and represents the
+      current orbital position of the constellation.  When absent it is
+      considered equal to zero.
+
+5.  Examples of constellations codes
+
+   This section provides some examples of how the constellation code can
+   be used to define existing satellite constellations sourced from
+   public information.  In some cases, when the phasing factor is not
+   known, it is speculative.
+
+    +=========+==============================+=======================+
+    | Name    | Description                  | Constellation code    |
+    +=========+==============================+=======================+
+    | Iridium | Walker Star, 780 km          | S:780:86.4:66/6/1     |
+    |         | altitude, 86.4° inclination, |                       |
+    |         | 66 satellites, 6 planes      |                       |
+    +---------+------------------------------+-----------------------+
+    | OneWeb  | Walker Star, 1 200 km        | S:1200:87.9:672/12/11 |
+    |         | altitude, 87.9° inclination, |                       |
+    |         | 672 satellites, 12 planes    |                       |
+    +---------+------------------------------+-----------------------+
+    | GPS     | Walker Delta, 20 180 km, 55° | D:20180:55:24/6/1     |
+    |         | inclination, 24 satellites,  |                       |
+    |         | 6 planes                     |                       |
+    +---------+------------------------------+-----------------------+
+
+                 Table 1: Examples of constellation codes
+
+6.  Security Considerations
+
+   As the code specified in this document is foreseed as a user input
+   into software that performs simulations, evaluations and analysis of
+   satellite constellations, implementers SHOULD consider validation and
+   sanitisation measures.
+
+7.  IANA Considerations
 
    This document has no IANA actions.
 
-5.  Normative References
+8.  References
+
+8.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/rfc/rfc2119>.
 
+   [RFC5234]  Crocker, D., Ed. and P. Overell, "Augmented BNF for Syntax
+              Specifications: ABNF", STD 68, RFC 5234,
+              DOI 10.17487/RFC5234, January 2008,
+              <https://www.rfc-editor.org/rfc/rfc5234>.
+
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
+8.2.  Informative References
+
+   [TvdLCode] Tim van der Lee, "Constellation Code", July 2023,
+              <https://github.com/Tim024/ConstellationCode>.
+
 Acknowledgments
 
-   TODO acknowledge.
+   We thank Tim van der Lee for his work on a code [TvdLCode] that
+   served as the basis for this document.
 
 Author's Address
 
-   Your Name Here
-   Your Organization Here
-   Email: your.email@example.com
+   Maxime Piraux
+   Aerospacelab
+   Email: maxime.piraux@aerospacelab.com
