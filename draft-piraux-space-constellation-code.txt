@@ -107,8 +107,9 @@ Table of Contents
    accurately.  However, when studying satellite constellations, TLEs
    may not be appropriate.  First, they assume each satellite has a
    known absolute position, which is derived from the launch time and
-   parameters.  Second, they involve complex calculations given the
-   chosen perturbation model which may not scale well to large-scale
+   parameters which may not be known when studying of the constellation.
+   Second, they involve complex calculations given the chosen
+   perturbation model which may not scale well to large-scale
    experiments.  Third, TLEs are not sufficient to determine how the
    links are established within the constellation as they do not
    indicate its characteristics but only the position of its satellites.
