@@ -4,8 +4,9 @@
 
 Systems and Protocol Aspects for Circumstellar Environments RG M. Piraux
 Internet-Draft                                              Aerospacelab
-Intended status: Informational                           20 October 2025
-Expires: 23 April 2026
+Intended status: Informational                              J. A. Fraire
+Expires: 9 July 2026                         Inria / Saarland University
+                                                          5 January 2026
 
 
               A code to describe satellite constellations
@@ -55,11 +56,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 April 2026.
+   This Internet-Draft will expire on 9 July 2026.
 
 Copyright Notice
 
-   Copyright (c) 2025 IETF Trust and the persons identified as the
+   Copyright (c) 2026 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -85,7 +86,7 @@ Table of Contents
      9.1.  Normative References
      9.2.  Informative References
    Acknowledgments
-   Author's Address
+   Authors' Addresses
 
 1.  Introduction
 
@@ -120,6 +121,13 @@ Table of Contents
    computed.  While this approach does not capture the small
    discrepancies that can occur during the launch and operation of the
    satellites, we argue that it is sufficient in our context.
+
+   This version of the specification applies only to circular orbital
+   shells.  The rationale for this restriction is that circular orbits
+   are the most common in current satellite constellations and simplify
+   the code syntax.  Elliptical orbits, such as those used in Molniya or
+   Flower constellations, are outside the current scope but could be
+   supported in a future extension of this document.
 
    The rest of this document is organised as follows.  Section 3
    introduces two variants of the Walker pattern for orbital shells.
@@ -177,14 +185,15 @@ Table of Contents
    trajectories are depicted by a dashed line, while satellites and
    their travel direction are indicated by arrow heads.
 
-   The orbits of a Walker Star constellation often have an inclination
-   close to 90 degrees with respect to the equator plane.  Given that
-   they are distributed over 180 degrees around the equator plane, one
-   half-sphere has satellites ascending from the south pole to the north
-   pole while the other has them descending from north pole to south
-   pole.  This is depicted on the two sides of Figure 1.  Over the south
-   and north poles, all orbits are crossing paths before going over the
-   other half-sphere.
+   The orbits of a Walker Star constellation typically have an
+   inclination close to 90 degrees with respect to the equator plane,
+   though this is not a geometric constraint and other inclinations are
+   possible.  Given that they are distributed over 180 degrees around
+   the equator plane, one half-sphere has satellites ascending from the
+   south pole to the north pole while the other has them descending from
+   north pole to south pole.  This is depicted on the two sides of
+   Figure 1.  Over the south and north poles, all orbits are crossing
+   paths before going over the other half-sphere.
 
                                  /  / \  \
                                , - ~ ~ ~ - ,
@@ -206,16 +215,19 @@ Table of Contents
    and end of the orbit distribution around the equator plane.  That is
    the first orbit (resp. last orbit) is next to the last orbit (resp.
    first orbit) going in the opposite direction of the sphere.  It can
-   be observed at the center of the Figure 1.  When communication
-   between satellites of neighbour orbits is desired, a Walker Star
-   pattern may not be suitable due to this effect and inter-satellite
-   links may be limited within the same orbit.
+   be observed at the center of the Figure 1.  The seam effect in Walker
+   Star constellations may limit cross-plane ISL links at the seam
+   boundary, though cross-plane links are still possible elsewhere; for
+   instance, the Iridium constellation uses a Walker Star pattern with
+   cross-plane ISLs.  However, the Delta variant is often preferred for
+   OISL-capable constellations due to the absence of the seam effect.
 
    Figure 2 illustrates a part of a possible network topology for Walker
-   Star constellations, with four orbital plane depicted vertically,
-   each containing three satellites.  Links are only established in-
-   plane, i.e., within the same orbit.  Each orbit forms a ring, where
-   the last satellite is connected to the first satellite.
+   Star constellations, with four orbital planes depicted vertically,
+   each containing three satellites.  In this example, links are only
+   established in-plane, i.e., within the same orbit, though cross-plane
+   links are also possible.  Each orbit forms a ring, where the last
+   satellite is connected to the first satellite.
 
                        :        :        :        :
                        |        |        |        |
@@ -241,11 +253,11 @@ Table of Contents
 
    Figure 3 is an illustration of a Walker Delta constellation with only
    two orbits due to graphical constraints.  The orbits of a Walker
-   Delta constellation often have an inclination ranging from 45 to 65
-   degrees with respect to the equator plane.  Combined with the
-   altitude, the inclination directly limits the latitude coverage of a
-   constellation, while Walker Star constellations have a complete
-   latitude coverage.
+   Delta constellation typically have an inclination ranging from 45 to
+   65 degrees with respect to the equator plane, though any inclination
+   is geometrically valid.  Combined with the altitude, the inclination
+   directly limits the latitude coverage of a constellation, while
+   Walker Star constellations have a complete latitude coverage.
 
    Given that the orbits are distributed around the entire equator
    plane, there is no seam effect as in the Walker Star pattern.
@@ -270,7 +282,7 @@ Table of Contents
                    Figure 3: A Walker Delta constellation
 
    Figure 4 illustrates a part of a possible network topology for Walker
-   Delta constellations, with four orbital plane depicted vertically,
+   Delta constellations, with four orbital planes depicted vertically,
    each containing three satellites.  Links are established in-plane and
    cross-plane, i.e., from one orbit to the other.
 
@@ -300,10 +312,6 @@ Table of Contents
    [RFC5234].  The code can define a constellation with multiple shells.
    Each shell can follow a Walker Star or Walker Delta pattern.
 
-   The code only considers circular orbits but future versions of this
-   document could extend it to include the apogee, perigee and argument
-   of the periapsis such that any elliptical orbit can be defined.
-
        constellation = shell [ "+" constellation ]
        shell = walker ":" altitude ":" inclination ":" plane-params
        shell =/ [ ":" mean-anomaly ]
@@ -326,21 +334,30 @@ Table of Contents
    code, a number of requirements on the semantics of the code are
    listed below.
 
+   *  The phasing factor represents the relative offset between
+      satellites in adjacent orbital planes.  It determines how
+      satellites in one plane are shifted in their orbital position
+      compared to the satellites in the neighbouring plane, enabling
+      optimal coverage patterns.
+
    *  The altitude is expressed in kilometres with reference to the
       Earth's surface.
 
    *  The inclination is expressed in degrees and MUST be within the
-      range of [0, 90] degrees.
+      range of [0, 180] degrees.  Inclinations greater than 90°
+      represent retrograde orbits.
 
    *  The number of satellites must be evenly divisible by the number of
       planes.
 
-   *  The phasing factor must be within [0, no-planes[.
+   *  The phasing factor must be within the range [0, no-planes - 1].
 
    *  The mean anomaly is expressed in degrees and MUST be within the
       range of [0, 360] degrees.  It is optional and represents the
-      current orbital position of the constellation.  When absent it is
-      considered equal to zero.
+      orbital position of the first satellite in the first plane of the
+      constellation.  When absent it is considered equal to zero.  The
+      reference epoch for the mean anomaly is defined by the user's
+      simulation environment or application context.
 
 5.  Examples of constellations codes
 
@@ -349,23 +366,27 @@ Table of Contents
    public information.  In some cases, when the phasing factor is not
    known, it is speculative.
 
-    +=========+==============================+=======================+
-    | Name    | Description                  | Constellation code    |
-    +=========+==============================+=======================+
-    | Iridium | Walker Star, 780 km          | S:780:86.4:66/6/1     |
-    |         | altitude, 86.4° inclination, |                       |
-    |         | 66 satellites, 6 planes      |                       |
-    +---------+------------------------------+-----------------------+
-    | OneWeb  | Walker Star, 1 200 km        | S:1200:87.9:672/12/11 |
-    |         | altitude, 87.9° inclination, |                       |
-    |         | 672 satellites, 12 planes    |                       |
-    +---------+------------------------------+-----------------------+
-    | GPS     | Walker Delta, 20 180 km, 55° | D:20180:55:24/6/1     |
-    |         | inclination, 24 satellites,  |                       |
-    |         | 6 planes                     |                       |
-    +---------+------------------------------+-----------------------+
+    +==========+==============================+=======================+
+    | Name     | Description                  | Constellation code    |
+    +==========+==============================+=======================+
+    | Iridium  | Walker Star, 780 km          | S:780:86.4:66/6/1     |
+    |          | altitude, 86.4° inclination, |                       |
+    |          | 66 satellites, 6 planes      |                       |
+    +----------+------------------------------+-----------------------+
+    | OneWeb   | Walker Star, 1 200 km        | S:1200:87.9:672/12/11 |
+    |          | altitude, 87.9° inclination, |                       |
+    |          | 672 satellites, 12 planes    |                       |
+    +----------+------------------------------+-----------------------+
+    | Starlink | Walker Star, 550 km          | S:550:53:1584/72/22   |
+    | (shell   | altitude, 53° inclination,   |                       |
+    | 1)       | 1584 satellites, 72 planes   |                       |
+    +----------+------------------------------+-----------------------+
+    | GPS      | Walker Delta, 20 180 km, 55° | D:20180:55:24/6/1     |
+    |          | inclination, 24 satellites,  |                       |
+    |          | 6 planes                     |                       |
+    +----------+------------------------------+-----------------------+
 
-                 Table 1: Examples of constellation codes
+                  Table 1: Examples of constellation codes
 
 6.  Considerations for future versions of this document
 
@@ -380,7 +401,7 @@ Table of Contents
 
 7.  Security Considerations
 
-   As the code specified in this document is foreseed as a user input
+   As the code specified in this document is foreseen as a user input
    into software that performs simulations, evaluations and analysis of
    satellite constellations, implementers SHOULD consider validation and
    sanitisation measures.
@@ -417,8 +438,13 @@ Acknowledgments
    We thank Tim van der Lee for his work on a code [TvdLCode] that
    served as the basis for this document.
 
-Author's Address
+Authors' Addresses
 
    Maxime Piraux
    Aerospacelab
    Email: maxime.piraux@aerospacelab.com
+
+
+   Juan A. Fraire
+   Inria / Saarland University
+   Email: juan.fraire@inria.fr
