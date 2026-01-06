@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-01-04T00:59:39.642546+00:00",
+  "timestamp": "2026-01-06T00:54:06.698987+00:00",
   "repo": "mpiraux/draft-piraux-space-constellation-code",
   "labels": [
     {
@@ -50,5 +50,48 @@
     }
   ],
   "issues": [],
-  "pulls": []
+  "pulls": [
+    {
+      "number": 1,
+      "id": "PR_kwDOP_Vg4c67jx28",
+      "title": "Clarifications, improvements, and new co-author",
+      "url": "https://github.com/mpiraux/draft-piraux-space-constellation-code/pull/1",
+      "state": "MERGED",
+      "author": "juanfraire",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "## Summary\n\nThis PR includes several clarifications and improvements to the constellation code specification:\n\n- **Circular orbits restriction**: Added paragraph in introduction explaining circular orbit restriction and mentioning Molniya/Flower constellations as future scope\n- **Inclination ranges**: Clarified that typical inclination ranges for Walker Star (~90\u00b0) and Walker Delta (45-65\u00b0) are not geometric constraints\n- **Walker Star cross-plane links**: Rewrote to explain seam effect limits cross-plane links but doesn't prevent them (citing Iridium as example), noted Delta is preferred for OISL\n- **Retrograde orbits**: Changed inclination range from [0, 90] to [0, 180] with explanation that >90\u00b0 represents retrograde orbits\n- **Mean anomaly**: Clarified it refers to first satellite in first plane, and epoch is defined by user's simulation environment\n- **Phasing factor**: Added explanatory text before the grammar semantics list\n- **Starlink example**: Added S:550:53:1584/72/22 for Starlink shell 1 to Table 1\n- **Typo fix**: \"foreseed\" \u2192 \"foreseen\"\n- **Grammar fix**: \"four orbital plane\" \u2192 \"four orbital planes\"\n- **Interval notation**: Changed [0, no-planes[ \u2192 [0, no-planes - 1] for consistency\n- **New co-author**: Added Juan A. Fraire to collaborate on link code and Flower constellation extensions",
+      "createdAt": "2026-01-05T15:56:18Z",
+      "updatedAt": "2026-01-05T17:01:37Z",
+      "baseRepository": "mpiraux/draft-piraux-space-constellation-code",
+      "baseRefName": "main",
+      "baseRefOid": "d398fae1df6727f89f074466b11bfc12c665e8fb",
+      "headRepository": "juanfraire/draft-piraux-space-constellation-code",
+      "headRefName": "clarifications-and-improvements",
+      "headRefOid": "de5bdb35dca1ae0f624e8e05b33b531543f65250",
+      "closedAt": "2026-01-05T17:01:37Z",
+      "mergedAt": "2026-01-05T17:01:37Z",
+      "mergedBy": "mpiraux",
+      "mergeCommit": {
+        "oid": "a967fe7798ff06e343c82cceb18dd689068f5de5"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOP_Vg4c7YOfSK",
+          "commit": {
+            "abbreviatedOid": "de5bdb3"
+          },
+          "author": "mpiraux",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-01-05T17:01:24Z",
+          "updatedAt": "2026-01-05T17:01:24Z",
+          "comments": []
+        }
+      ]
+    }
+  ]
 }
