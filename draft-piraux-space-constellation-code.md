@@ -39,6 +39,7 @@ informative:
     title: Constellation Code
     date: July 2023
     target: https://github.com/Tim024/ConstellationCode
+  BhSi2019: DOI.10.1145/3359989.3365407
 ...
 
 --- abstract
@@ -59,8 +60,10 @@ The approach of this document is based on the mission parameters of a satellite 
 
 This version of the specification applies only to circular orbital shells. The rationale for this restriction is that circular orbits are the most common in current satellite constellations and simplify the code syntax. Elliptical orbits, such as those used in Molniya or Flower constellations, are outside the current scope but could be supported in a future extension of this document.
 
+The notation defined in this document can also specify a pattern for links within a shell of a constellation. This pattern is repeated to establish the connectivity of a satellite with its neighbours within the shell. This is inspired by the works of network researchers on constellation network topology design {{BhSi2019}}.
+
 The rest of this document is organised as follows.
-{{satellite-constellations}} introduces two variants of the Walker pattern for orbital shells. These are used to define many of the existing satellite constellations. {{constellation-code}} defines the constellation code syntax using an ABNF grammar [RFC5234] and the code semantics. {{examples-of-constellation-codes}} contains examples of existing constellations defined using the constellation code. Finally, {{considerations}} concludes with considerations for future versions of this document.
+{{satellite-constellations}} introduces two variants of the Walker pattern for orbital shells. These are used to define many of the existing satellite constellations. {{constellation-code}} defines the constellation code syntax using an ABNF grammar [RFC5234] and the code semantics. {{examples-of-constellation-codes}} contains examples of existing constellations defined using the constellation code. {{links}} augments the constellation code with a pattern notation to describe links within a shell. Finally, {{considerations}} concludes with considerations for future versions of this document.
 
 # Conventions and Definitions
 
@@ -223,6 +226,84 @@ This section provides some examples of how the constellation code can be used to
  | GPS | Walker Delta, 20 180 km, 55° inclination, 24 satellites, 6 planes | D:20180:55:24/6/1 |
 {: #example-table title="Examples of constellation codes"}
 
+# Describing links in a shell {#links}
+
+In this section, we extend the code notation with a complementary YAML format to specify the patterns of links within a shell. Each YAML document following the format defined in this I-D specifies a constellation that may be composed of several shells. An example of such a document is as follows:
+
+~~~ yaml
+version: draft-piraux-space-constellation-code-01
+shells:
+- code: D:1200:55:400/20/19
+  link_patterns:
+  - rank_offset: 1   # Establish an in-plane link towards the next sat.
+  - plane_offset: 1  # Establish a cross-plane link in a staggered pattern
+    conditions:      # e.g. when only three links are possible.
+    - op: eq
+      left: { left: rank, op: mod, right: 2 }
+      right: { left: plane, op: mod, right: 2 }
+- code: S:1210:89:52/4/1
+  link_patterns:
+  - rank_offset: 1   # Establish an in-plane link towards the next sat.
+~~~
+{: #constellation-yaml-example artwork-align="center" artwork-name="syntax" title="Example of YAML document specifying a two-shell constellation"}
+
+{{constellation-yaml-example}} specifies a two-shell constellation. The first shell is a Walker Delta shell in which satellites have three links towards neighbours. The second one is a Walker Star pattern with two in-plane links per satellite.
+
+These patterns are encoded through the `link_patterns` key. It contains a list of patterns with optional conditions. Each pattern can specify how to reach a neighbour given local plane and rank offsets to establish a bidirectional link. For instance, the first pattern of the first shell specifies that a link is formed with the next satellite in the same orbit.
+
+For each pattern, a list of conditions can be expressed with the `conditions` key. These are evaluated for each satellite within the shell to determine whether the corresponding pattern should be applied to form a link. By applying each patterns to all satellites, the set of links within the constellation shell is established.
+
+## Detailed specification
+
+### Top-level keys
+
+`version`
+
+: Indicates the version of this I-D that the YAML document should be interpreted with.
+
+`shells`
+
+: A list of shells.
+
+### Shell
+
+`code`
+
+: The shell code following the specification in {{constellation-code}}.
+
+`link_patterns`
+
+: A list of link patterns.
+
+### Link pattern
+
+`rank_offset`
+
+: An integer specifying the offset in rank to reach the neighbour for this link.
+
+`plane_offset`
+
+: An integer specifying the offset in plane to reach the neighbour for this link. When this offset causes the plane index to wrap around to the first plane, the rank index of the target satellite is adjusted according to the phasing factor of the shell.
+
+Both types of offset can be included for a single pattern. When one is absent, it is considered to be equal to zero.
+In addition, they naturally wrap around at the boundaries of a shell.
+
+`conditions`
+
+: A list of conditions that must be met for this link to be added.
+
+### Condition
+
+Each condition is an operation `op` on two expressions, `left` and `right`.
+
+`op`
+
+: The operation of this condition. Can be `eq` for equality or `mod` for the modulus operation.
+
+`left`, `right`
+
+: An expression. Can be a nested operation, an integer, or context element. Context elements include `rank` for the current rank index and `plane` for the current plane index of the satellite considered when evaluating a given link pattern.
+
 # Considerations for future versions of this document {#considerations}
 
 The code presented in this document does not consider yet the link configuration within a constellation. For instance, in the case of a Walker Delta constellation, satellites may only be able to establish three OISLs, e.g., two in-plane links and a single cross-plane link. Instead, it is assumed that the network topology is fully meshed as illustrated in {{fig-walker-star-topo}} and {{fig-walker-delta-topo}}. Future versions of this document should consider means to indicate how links are established within a constellation, for instance using adjacency matrices.
@@ -237,6 +318,13 @@ As the code specified in this document is foreseen as a user input into software
 This document has no IANA actions.
 
 --- back
+
+# Changelog
+
+## Since draft-piraux-space-constellation-code-00
+
+* Add YAML format to specify link patterns within shells of a constellation.
+* Improvement of the text and examples.
 
 # Acknowledgments
 {:numbered="false"}
