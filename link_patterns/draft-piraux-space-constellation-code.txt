@@ -85,6 +85,7 @@ Table of Contents
        6.1.2.  Shell
        6.1.3.  Link pattern
        6.1.4.  Condition
+       6.1.5.  Expression
    7.  Considerations for future versions of this document
    8.  Security Considerations
    9.  IANA Considerations
@@ -417,9 +418,8 @@ shells:
   - rank_offset: 1   # Establish an in-plane link towards the next sat.
   - plane_offset: 1  # Establish a cross-plane link in a staggered pattern
     conditions:      # e.g. when only three links are possible.
-    - left: { rank, mod: 2 }
-      eq:
-      right: { plane, mod: 2 }
+    - eq: [{mod: [rank, 2]}, {mod: [plane, 2]}] # rank % 2 == plane % 2
+
 - code: S:1210:89:52/4/1
   link_patterns:
   - rank_offset: 1   # Establish an in-plane link towards the next sat.
@@ -480,17 +480,22 @@ shells:
 
 6.1.4.  Condition
 
-   Each condition is a predicate on two expressions, left and right.
-   This version of the document only specifies the equality predicate
-   indicated by the eq key.
+   Each condition is a predicate on two expressions encoded as mapping.
+   The predicate is the key while the two expressions form a sequence as
+   the value.  This version of the document only specifies the equality
+   predicate indicated by the eq key.
 
-   left, right  An expression.  It can be an integer or a context
-      element, optionally combined with an operation.  This version of
-      the document only specifies the modulo operation indicated by the
-      mod key, taking its right-hand side operand as a value for
-      conciseness.  Context elements include rank for the current rank
-      index and plane for the current plane index of the satellite
-      considered when evaluating a given link pattern.
+6.1.5.  Expression
+
+   It can be an integer, a context element or an operation on two
+   expressions.  Context elements are strings and include rank for the
+   current rank index and plane for the current plane index of the
+   satellite considered when evaluating a given link pattern.
+
+   An operation is encoded as mapping, with the key defining the type of
+   operation and the value containing a sequence with the two
+   expressions.  This version of the document only specifies the modulo
+   operation indicated by the mod key.
 
 7.  Considerations for future versions of this document
 

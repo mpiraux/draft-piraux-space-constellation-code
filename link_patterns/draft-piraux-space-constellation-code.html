@@ -1197,6 +1197,9 @@ In addition, this document may serve as an introduction to satellite constellati
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1.2.4">
                     <p id="section-toc.1-1.6.2.1.2.4.1"><a href="#section-6.1.4" class="auto internal xref">6.1.4</a>.  <a href="#name-condition" class="internal xref">Condition</a></p>
 </li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1.2.5">
+                    <p id="section-toc.1-1.6.2.1.2.5.1"><a href="#section-6.1.5" class="auto internal xref">6.1.5</a>.  <a href="#name-expression" class="internal xref">Expression</a></p>
+</li>
                 </ul>
 </li>
             </ul>
@@ -1528,9 +1531,8 @@ shells:
   - rank_offset: 1   # Establish an in-plane link towards the next sat.
   - plane_offset: 1  # Establish a cross-plane link in a staggered pattern
     conditions:      # e.g. when only three links are possible.
-    - left: { rank, mod: 2 }
-      eq:
-      right: { plane, mod: 2 }
+    - eq: [{mod: [rank, 2]}, {mod: [plane, 2]}] # rank % 2 == plane % 2
+
 - code: S:1210:89:52/4/1
   link_patterns:
   - rank_offset: 1   # Establish an in-plane link towards the next sat.
@@ -1619,16 +1621,18 @@ In addition, they naturally wrap around at the boundaries of a shell.<a href="#s
           <h4 id="name-condition">
 <a href="#section-6.1.4" class="section-number selfRef">6.1.4. </a><a href="#name-condition" class="section-name selfRef">Condition</a>
           </h4>
-<p id="section-6.1.4-1">Each condition is a predicate on two expressions, <code>left</code> and <code>right</code>. This version of the document only specifies the equality predicate indicated by the <code>eq</code> key.<a href="#section-6.1.4-1" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-6.1.4-2">
-            <dt id="section-6.1.4-2.1">
-<code>left</code>, <code>right</code>
-</dt>
-            <dd style="margin-left: 1.5em" id="section-6.1.4-2.2">
-              <p id="section-6.1.4-2.2.1">An expression. It can be an integer or a context element, optionally combined with an operation. This version of the document only specifies the modulo operation indicated by the <code>mod</code> key, taking its right-hand side operand as a value for conciseness. Context elements include <code>rank</code> for the current rank index and <code>plane</code> for the current plane index of the satellite considered when evaluating a given link pattern.<a href="#section-6.1.4-2.2.1" class="pilcrow">¶</a></p>
-</dd>
-          <dd class="break"></dd>
-</dl>
+<p id="section-6.1.4-1">Each condition is a predicate on two expressions encoded as mapping. The predicate is the key while the two expressions form a sequence as the value. This version of the document only specifies the equality predicate indicated by the <code>eq</code> key.<a href="#section-6.1.4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="expression">
+<section id="section-6.1.5">
+          <h4 id="name-expression">
+<a href="#section-6.1.5" class="section-number selfRef">6.1.5. </a><a href="#name-expression" class="section-name selfRef">Expression</a>
+          </h4>
+<p id="section-6.1.5-1">It can be an integer, a context element or an operation on two expressions.
+Context elements are strings and include <code>rank</code> for the current rank index and <code>plane</code> for the current plane index of the satellite considered when evaluating a given link pattern.<a href="#section-6.1.5-1" class="pilcrow">¶</a></p>
+<p id="section-6.1.5-2">An operation is encoded as mapping, with the key defining the type of operation and the value containing a sequence with the two expressions.
+This version of the document only specifies the modulo operation indicated by the <code>mod</code> key.<a href="#section-6.1.5-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
