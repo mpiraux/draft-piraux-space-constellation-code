@@ -238,9 +238,9 @@ shells:
   - rank_offset: 1   # Establish an in-plane link towards the next sat.
   - plane_offset: 1  # Establish a cross-plane link in a staggered pattern
     conditions:      # e.g. when only three links are possible.
-    - op: eq
-      left: { left: rank, op: mod, right: 2 }
-      right: { left: plane, op: mod, right: 2 }
+    - left: { rank, mod: 2 }
+      eq:
+      right: { plane, mod: 2 }
 - code: S:1210:89:52/4/1
   link_patterns:
   - rank_offset: 1   # Establish an in-plane link towards the next sat.
@@ -294,19 +294,15 @@ In addition, they naturally wrap around at the boundaries of a shell.
 
 ### Condition
 
-Each condition is an operation `op` on two expressions, `left` and `right`.
-
-`op`
-
-: The operation of this condition. Can be `eq` for equality or `mod` for the modulus operation.
+Each condition is a predicate on two expressions, `left` and `right`. This version of the document only specifies the equality predicate indicated by the `eq` key.
 
 `left`, `right`
 
-: An expression. Can be a nested operation, an integer, or context element. Context elements include `rank` for the current rank index and `plane` for the current plane index of the satellite considered when evaluating a given link pattern.
+: An expression. It can be an integer or a context element, optionally combined with an operation. This version of the document only specifies the modulo operation indicated by the `mod` key, taking its right-hand side operand as a value for conciseness. Context elements include `rank` for the current rank index and `plane` for the current plane index of the satellite considered when evaluating a given link pattern.
 
 # Considerations for future versions of this document {#considerations}
 
-The code presented in this document does not consider yet the link configuration within a constellation. For instance, in the case of a Walker Delta constellation, satellites may only be able to establish three OISLs, e.g., two in-plane links and a single cross-plane link. Instead, it is assumed that the network topology is fully meshed as illustrated in {{fig-walker-star-topo}} and {{fig-walker-delta-topo}}. Future versions of this document should consider means to indicate how links are established within a constellation, for instance using adjacency matrices.
+The code presented in this document does not consider the capabilities of satellites within a constellation to establish links. It focuses on defining the stable network topology that is expected for a constellation. Future versions of this document could consider means to define the capabilities of Optical Communication Terminals (OCTs) used to establish ISLs. This is complementary to the description of the network topology, which forms more of an intent, while capabilities define the space of possible links.
 
 # Security Considerations
 
