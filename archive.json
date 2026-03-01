@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-26T01:04:04.564788+00:00",
+  "timestamp": "2026-03-01T01:12:51.815797+00:00",
   "repo": "mpiraux/draft-piraux-space-constellation-code",
   "labels": [
     {
@@ -90,6 +90,177 @@
           "createdAt": "2026-01-05T17:01:24Z",
           "updatedAt": "2026-01-05T17:01:24Z",
           "comments": []
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "id": "PR_kwDOP_Vg4c7GdQC9",
+      "title": "Link patterns can be expressed in a YAML document",
+      "url": "https://github.com/mpiraux/draft-piraux-space-constellation-code/pull/2",
+      "state": "OPEN",
+      "author": "mpiraux",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-02-26T07:52:42Z",
+      "updatedAt": "2026-02-27T13:01:35Z",
+      "baseRepository": "mpiraux/draft-piraux-space-constellation-code",
+      "baseRefName": "main",
+      "baseRefOid": "a967fe7798ff06e343c82cceb18dd689068f5de5",
+      "headRepository": "mpiraux/draft-piraux-space-constellation-code",
+      "headRefName": "link_patterns",
+      "headRefOid": "5783aba790ac5b37971c7649ec0c57b3cc348bd9",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOP_Vg4c7mNvmA",
+          "commit": {
+            "abbreviatedOid": "75fdf43"
+          },
+          "author": "juanfraire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "Thanks, Maxime. The overall structure is good \u2014 embedding the compact code in YAML and the rank_offset/plane_offset motif approach are well-chosen. I have a few comments below, the main one being about conditions.",
+          "createdAt": "2026-02-26T17:07:46Z",
+          "updatedAt": "2026-02-26T17:15:10Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "Thanks, Maxime. The overall structure is good \u2014 embedding the compact code in YAML and the rank_offset/plane_offset motif approach are well-chosen. I have a few comments below, the main one being about conditions.",
+              "createdAt": "2026-02-26T17:07:46Z",
+              "updatedAt": "2026-02-26T17:15:10Z"
+            },
+            {
+              "originalPosition": 114,
+              "body": "In our email exchange, you proposed simplifying the conditions to two fixed predicates (\"rank index is even/odd\", \"plane index is even/odd\") before the cutoff, and revisiting the full DSL approach based on community feedback. The PR still uses the full nested DSL (op/left/right tree).\n\nMy suggestion: let's follow the agreement and replace the DSL with two named, fixed conditions for this version \u2014 e.g.:\n\n```\n  conditions:\n  - rank_parity_eq_plane_parity\n```\n  or more explicitly:\n```\n  conditions:\n  - left: { rank, mod: 2 }\n    eq:\n    right: { plane, mod: 2 }\n```\n\nThis keeps scope tight, avoids the bikeshedding risk, and we can open it up to the full DSL in a future version if there's demand.",
+              "createdAt": "2026-02-26T17:10:34Z",
+              "updatedAt": "2026-02-26T17:15:11Z"
+            },
+            {
+              "originalPosition": 60,
+              "body": "The op field currently serves two distinct purposes: comparison (e.g., eq) and arithmetic (e.g., mod). In the example, op: mod appears as a sub-expression inside op: eq, making the distinction implicit. A reader may not immediately grasp that op at one level is a boolean predicate and at another level is an integer operation. Even if we keep the DSL, it might be worth distinguishing the two, e.g., calling the top-level predicate predicate and nested arithmetic expression.",
+              "createdAt": "2026-02-26T17:12:23Z",
+              "updatedAt": "2026-02-26T17:15:11Z"
+            },
+            {
+              "originalPosition": 128,
+              "body": "This paragraph is now largely addressed by the new #links section. The last sentence \u2014 \"Future versions of this document should consider means to indicate how links are established within a constellation, for instance using adjacency matrices\" \u2014 is stale and should be updated to reflect that a link pattern notation has been introduced, and point forward to what remains open (e.g., OCT capabilities, adjacency matrices as an alternative).",
+              "createdAt": "2026-02-26T17:13:20Z",
+              "updatedAt": "2026-02-26T17:15:11Z"
+            },
+            {
+              "originalPosition": 53,
+              "body": "This field will need to be manually bumped with each revision. Either we document that clearly in the spec (\"this field MUST match the published I-D version being implemented\") or we consider using draft-piraux-space-constellation-code-latest as a valid value. Worth discussing before this goes to the list.",
+              "createdAt": "2026-02-26T17:14:20Z",
+              "updatedAt": "2026-02-26T17:15:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOP_Vg4c7ma7a4",
+          "commit": {
+            "abbreviatedOid": "75fdf43"
+          },
+          "author": "mpiraux",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-27T09:07:29Z",
+          "updatedAt": "2026-02-27T09:07:29Z",
+          "comments": [
+            {
+              "originalPosition": 53,
+              "body": "If one puts -latest as a value than they accept that things might break without notice. This choice was loosely formed from my experience following the specification of QUIC extensions, in which extensions often reserve a range of codepoints during development and further partition it per draft revision.\r\n\r\nThe text says `version : Indicates the version of this I-D that the YAML document should be interpreted with.` I'm fine with it as is but we can change it to a MUST.",
+              "createdAt": "2026-02-27T09:07:29Z",
+              "updatedAt": "2026-02-27T09:07:30Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOP_Vg4c7mcBd6",
+          "commit": {
+            "abbreviatedOid": "75fdf43"
+          },
+          "author": "mpiraux",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-27T10:13:31Z",
+          "updatedAt": "2026-02-27T10:13:31Z",
+          "comments": [
+            {
+              "originalPosition": 60,
+              "body": "I updated the text to distinguish predicates from operations. It should be clearer ",
+              "createdAt": "2026-02-27T10:13:31Z",
+              "updatedAt": "2026-02-27T10:13:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOP_Vg4c7mcEZy",
+          "commit": {
+            "abbreviatedOid": "75fdf43"
+          },
+          "author": "mpiraux",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-27T10:16:16Z",
+          "updatedAt": "2026-02-27T10:16:16Z",
+          "comments": [
+            {
+              "originalPosition": 114,
+              "body": "Indeed I lost track of the conclusion. I updated the PR with the second format as it allows a bit more flexibility while being simpler",
+              "createdAt": "2026-02-27T10:16:16Z",
+              "updatedAt": "2026-02-27T10:16:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOP_Vg4c7mcQZm",
+          "commit": {
+            "abbreviatedOid": "75fdf43"
+          },
+          "author": "mpiraux",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-27T10:26:53Z",
+          "updatedAt": "2026-02-27T10:26:53Z",
+          "comments": [
+            {
+              "originalPosition": 128,
+              "body": "I updated the paragraph with what I intended indeed",
+              "createdAt": "2026-02-27T10:26:53Z",
+              "updatedAt": "2026-02-27T10:26:54Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOP_Vg4c7me0X7",
+          "commit": {
+            "abbreviatedOid": "75fdf43"
+          },
+          "author": "mpiraux",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-27T13:01:35Z",
+          "updatedAt": "2026-02-27T13:01:35Z",
+          "comments": [
+            {
+              "originalPosition": 114,
+              "body": "I gave it another try and am more convinced by the current approach. The text describing a condition is a lot simpler which is signifcant in that regard. Sorry if that reads like I pushed back on previous discussions, I feel more confident now than previously. Especially with the use of correct terms (predicate, operation, etc)",
+              "createdAt": "2026-02-27T13:01:35Z",
+              "updatedAt": "2026-02-27T13:01:35Z"
+            }
+          ]
         }
       ]
     }
