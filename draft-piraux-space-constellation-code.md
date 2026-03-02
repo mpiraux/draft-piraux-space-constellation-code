@@ -40,6 +40,7 @@ informative:
     date: July 2023
     target: https://github.com/Tim024/ConstellationCode
   BhSi2019: DOI.10.1145/3359989.3365407
+  StFrHe2022: DOI.10.1109/ASMS/SPSC55670.2022.9914716
 ...
 
 --- abstract
@@ -222,7 +223,7 @@ This section provides some examples of how the constellation code can be used to
  |:-----|:------------|:-------------------|
  | Iridium | Walker Star, 780 km altitude, 86.4° inclination, 66 satellites, 6 planes | S:780:86.4:66/6/1 |
  | OneWeb | Walker Star, 1 200 km altitude, 87.9° inclination, 672 satellites, 12 planes | S:1200:87.9:672/12/11 |
- | Starlink (shell 1) | Walker Star, 550 km altitude, 53° inclination, 1584 satellites, 72 planes | S:550:53:1584/72/22 |
+ | Starlink (shell 1) | Walker Delta, 550 km altitude, 53° inclination, 1584 satellites, 72 planes | D:550:53:1584/72/39 {{StFrHe2022}} |
  | GPS | Walker Delta, 20 180 km, 55° inclination, 24 satellites, 6 planes | D:20180:55:24/6/1 |
 {: #example-table title="Examples of constellation codes"}
 
