@@ -60,7 +60,7 @@ The approach of this document is based on the mission parameters of a satellite 
 
 This version of the specification applies only to circular orbital shells. The rationale for this restriction is that circular orbits are the most common in current satellite constellations and simplify the code syntax. Elliptical orbits, such as those used in Molniya or Flower constellations, are outside the current scope but could be supported in a future extension of this document.
 
-The notation defined in this document can also specify a pattern for links within a shell of a constellation. This pattern is repeated to establish the connectivity of a satellite with its neighbours within the shell. This is inspired by the works of network researchers on constellation network topology design {{BhSi2019}}.
+The notation defined in this document can also specify patterns for links within a shell of a constellation. Each pattern is repeated to establish the connectivity of a satellite with its neighbours within the shell. This is inspired by the works of network researchers on constellation network topology design {{BhSi2019}}.
 
 The rest of this document is organised as follows.
 {{satellite-constellations}} introduces two variants of the Walker pattern for orbital shells. These are used to define many of the existing satellite constellations. {{constellation-code}} defines the constellation code syntax using an ABNF grammar [RFC5234] and the code semantics. {{examples-of-constellation-codes}} contains examples of existing constellations defined using the constellation code. {{links}} augments the constellation code with a pattern notation to describe links within a shell. Finally, {{considerations}} concludes with considerations for future versions of this document.
