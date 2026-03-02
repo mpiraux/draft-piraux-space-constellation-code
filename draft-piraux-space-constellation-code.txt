@@ -392,8 +392,8 @@ Table of Contents
     |          | altitude, 87.9° inclination, |                       |
     |          | 672 satellites, 12 planes    |                       |
     +----------+------------------------------+-----------------------+
-    | Starlink | Walker Star, 550 km          | S:550:53:1584/72/22   |
-    | (shell   | altitude, 53° inclination,   |                       |
+    | Starlink | Walker Delta, 550 km         | D:550:53:1584/72/39   |
+    | (shell   | altitude, 53° inclination,   | [StFrHe2022]          |
     | 1)       | 1584 satellites, 72 planes   |                       |
     +----------+------------------------------+-----------------------+
     | GPS      | Walker Delta, 20 180 km, 55° | D:20180:55:24/6/1     |
@@ -545,6 +545,15 @@ shells:
               Experiments And Technologies pp. 341-354,
               DOI 10.1145/3359989.3365407, December 2019,
               <https://doi.org/10.1145/3359989.3365407>.
+
+   [StFrHe2022]
+              Stock, G., Fraire, J., and H. Hermanns, "Distributed On-
+              Demand Routing for LEO Mega-Constellations: A Starlink
+              Case Study", IEEE, 2022 11th Advanced Satellite Multimedia
+              Systems Conference and the 17th Signal Processing for
+              Space Communications Workshop (ASMS/SPSC) pp. 1-8,
+              DOI 10.1109/asms/spsc55670.2022.9914716, September 2022,
+              <https://doi.org/10.1109/asms/spsc55670.2022.9914716>.
 
    [TvdLCode] Tim van der Lee, "Constellation Code", July 2023,
               <https://github.com/Tim024/ConstellationCode>.
