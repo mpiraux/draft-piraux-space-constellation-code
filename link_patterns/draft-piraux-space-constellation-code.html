@@ -1047,11 +1047,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Constellation code</td>
-<td class="right">February 2026</td>
+<td class="right">March 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Piraux &amp; Fraire</td>
-<td class="center">Expires 31 August 2026</td>
+<td class="center">Expires 3 September 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1064,12 +1064,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-piraux-space-constellation-code-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-02-27" class="published">27 February 2026</time>
+<time datetime="2026-03-02" class="published">2 March 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-08-31">31 August 2026</time></dd>
+<dd class="expires"><time datetime="2026-09-03">3 September 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1125,7 +1125,7 @@ In addition, this document may serve as an introduction to satellite constellati
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 31 August 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 3 September 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1251,7 +1251,7 @@ In addition, this document may serve as an introduction to satellite constellati
 <p id="section-1-2">The true position of a satellite is often represented using a Two-Line Element set (TLE). A TLE contains a number of fields describing the orbital elements at a given time of a given satellite. Combined with a simplified perturbation model, the TLE can be used to predict the future position and velocity of the satellite relatively accurately. However, when studying satellite constellations, TLEs may not be appropriate. First, they assume each satellite has a known absolute position, which is derived from the launch time and parameters which may not be known at the time of study. Second, they involve complex calculations given the chosen perturbation model which may not scale well to large-scale experiments. Third, TLEs are not sufficient to determine how the links are established within the constellation as they do not indicate its characteristics but only the position of its satellites.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">The approach of this document is based on the mission parameters of a satellite constellation. Based on these parameters, the expected position of each satellite within the constellation can then be computed. While this approach does not capture the small discrepancies that can occur during the launch and operation of the satellites, we argue that it is sufficient in our context.<a href="#section-1-3" class="pilcrow">¶</a></p>
 <p id="section-1-4">This version of the specification applies only to circular orbital shells. The rationale for this restriction is that circular orbits are the most common in current satellite constellations and simplify the code syntax. Elliptical orbits, such as those used in Molniya or Flower constellations, are outside the current scope but could be supported in a future extension of this document.<a href="#section-1-4" class="pilcrow">¶</a></p>
-<p id="section-1-5">The notation defined in this document can also specify a pattern for links within a shell of a constellation. This pattern is repeated to establish the connectivity of a satellite with its neighbours within the shell. This is inspired by the works of network researchers on constellation network topology design <span>[<a href="#BhSi2019" class="cite xref">BhSi2019</a>]</span>.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-5">The notation defined in this document can also specify patterns for links within a shell of a constellation. Each pattern is repeated to establish the connectivity of a satellite with its neighbours within the shell. This is inspired by the works of network researchers on constellation network topology design <span>[<a href="#BhSi2019" class="cite xref">BhSi2019</a>]</span>.<a href="#section-1-5" class="pilcrow">¶</a></p>
 <p id="section-1-6">The rest of this document is organised as follows.
 <a href="#satellite-constellations" class="auto internal xref">Section 3</a> introduces two variants of the Walker pattern for orbital shells. These are used to define many of the existing satellite constellations. <a href="#constellation-code" class="auto internal xref">Section 4</a> defines the constellation code syntax using an ABNF grammar <span>[<a href="#RFC5234" class="cite xref">RFC5234</a>]</span> and the code semantics. <a href="#examples-of-constellation-codes" class="auto internal xref">Section 5</a> contains examples of existing constellations defined using the constellation code. <a href="#links" class="auto internal xref">Section 6</a> augments the constellation code with a pattern notation to describe links within a shell. Finally, <a href="#considerations" class="auto internal xref">Section 7</a> concludes with considerations for future versions of this document.<a href="#section-1-6" class="pilcrow">¶</a></p>
 </section>

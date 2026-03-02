@@ -5,8 +5,8 @@
 Systems and Protocol Aspects for Circumstellar Environments RG M. Piraux
 Internet-Draft                                              Aerospacelab
 Intended status: Informational                              J. A. Fraire
-Expires: 31 August 2026                      Inria / Saarland University
-                                                        27 February 2026
+Expires: 3 September 2026                    Inria / Saarland University
+                                                            2 March 2026
 
 
               A code to describe satellite constellations
@@ -56,7 +56,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 31 August 2026.
+   This Internet-Draft will expire on 3 September 2026.
 
 Copyright Notice
 
@@ -138,8 +138,8 @@ Table of Contents
    Flower constellations, are outside the current scope but could be
    supported in a future extension of this document.
 
-   The notation defined in this document can also specify a pattern for
-   links within a shell of a constellation.  This pattern is repeated to
+   The notation defined in this document can also specify patterns for
+   links within a shell of a constellation.  Each pattern is repeated to
    establish the connectivity of a satellite with its neighbours within
    the shell.  This is inspired by the works of network researchers on
    constellation network topology design [BhSi2019].
