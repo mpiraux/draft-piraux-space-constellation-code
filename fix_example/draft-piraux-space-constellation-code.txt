@@ -381,31 +381,27 @@ Table of Contents
    public information.  In some cases, when the phasing factor is not
    known, it is speculative.
 
-     +==============+=======================+=======================+
-     | Name         | Description           | Constellation code    |
-     +==============+=======================+=======================+
-     | Iridium      | Walker Star, 780 km   | S:780:86.4:66/6/1     |
-     |              | altitude, 86.4°       |                       |
-     |              | inclination, 66       |                       |
-     |              | satellites, 6 planes  |                       |
-     +--------------+-----------------------+-----------------------+
-     | OneWeb       | Walker Star, 1 200 km | S:1200:87.9:672/12/11 |
-     |              | altitude, 87.9°       |                       |
-     |              | inclination, 672      |                       |
-     |              | satellites, 12 planes |                       |
-     +--------------+-----------------------+-----------------------+
-     | Starlink     | Walker Delta, 550 km  | D:550:53:1584/22/17   |
-     | (shell 1)    | altitude, 53°         |                       |
-     | [LiChYa2021] | inclination, 1584     |                       |
-     |              | satellites, 22 planes |                       |
-     +--------------+-----------------------+-----------------------+
-     | GPS          | Walker Delta, 20 180  | D:20180:55:24/6/1     |
-     |              | km, 55° inclination,  |                       |
-     |              | 24 satellites, 6      |                       |
-     |              | planes                |                       |
-     +--------------+-----------------------+-----------------------+
+    +==========+==============================+=======================+
+    | Name     | Description                  | Constellation code    |
+    +==========+==============================+=======================+
+    | Iridium  | Walker Star, 780 km          | S:780:86.4:66/6/1     |
+    |          | altitude, 86.4° inclination, |                       |
+    |          | 66 satellites, 6 planes      |                       |
+    +----------+------------------------------+-----------------------+
+    | OneWeb   | Walker Star, 1 200 km        | S:1200:87.9:672/12/11 |
+    |          | altitude, 87.9° inclination, |                       |
+    |          | 672 satellites, 12 planes    |                       |
+    +----------+------------------------------+-----------------------+
+    | Starlink | Walker Delta, 550 km         | D:550:53:1584/72/39   |
+    | (shell   | altitude, 53° inclination,   | [StFrHe2022]          |
+    | 1)       | 1584 satellites, 72 planes   |                       |
+    +----------+------------------------------+-----------------------+
+    | GPS      | Walker Delta, 20 180 km, 55° | D:20180:55:24/6/1     |
+    |          | inclination, 24 satellites,  |                       |
+    |          | 6 planes                     |                       |
+    +----------+------------------------------+-----------------------+
 
-                 Table 1: Examples of constellation codes
+                  Table 1: Examples of constellation codes
 
 6.  Describing links in a shell
 
@@ -550,13 +546,14 @@ shells:
               DOI 10.1145/3359989.3365407, December 2019,
               <https://doi.org/10.1145/3359989.3365407>.
 
-   [LiChYa2021]
-              Liang, J., Chaudhry, A., and H. Yanikomeroglu, "Phasing
-              Parameter Analysis for Satellite Collision Avoidance in
-              Starlink and Kuiper Constellations", IEEE, 2021 IEEE 4th
-              5G World Forum (5GWF) pp. 493-498,
-              DOI 10.1109/5gwf52925.2021.00093, October 2021,
-              <https://doi.org/10.1109/5gwf52925.2021.00093>.
+   [StFrHe2022]
+              Stock, G., Fraire, J., and H. Hermanns, "Distributed On-
+              Demand Routing for LEO Mega-Constellations: A Starlink
+              Case Study", IEEE, 2022 11th Advanced Satellite Multimedia
+              Systems Conference and the 17th Signal Processing for
+              Space Communications Workshop (ASMS/SPSC) pp. 1-8,
+              DOI 10.1109/asms/spsc55670.2022.9914716, September 2022,
+              <https://doi.org/10.1109/asms/spsc55670.2022.9914716>.
 
    [TvdLCode] Tim van der Lee, "Constellation Code", July 2023,
               <https://github.com/Tim024/ConstellationCode>.
