@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-01T01:12:51.815797+00:00",
+  "timestamp": "2026-03-03T01:07:19.722293+00:00",
   "repo": "mpiraux/draft-piraux-space-constellation-code",
   "labels": [
     {
@@ -49,7 +49,24 @@
       "color": "ffffff"
     }
   ],
-  "issues": [],
+  "issues": [
+    {
+      "number": 3,
+      "id": "I_kwDOP_Vg4c7vDlwn",
+      "title": "Starlink Shell 1 Walker type",
+      "url": "https://github.com/mpiraux/draft-piraux-space-constellation-code/issues/3",
+      "state": "CLOSED",
+      "author": "mpiraux",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "https://github.com/mpiraux/draft-piraux-space-constellation-code/blob/a967fe7798ff06e343c82cceb18dd689068f5de5/draft-piraux-space-constellation-code.md?plain=1#L223\n\nIt currently says \"Walker Star\" but that looks odd. If we consider it might rather be \"Walker Delta\" then the parameters make more sense.",
+      "createdAt": "2026-03-02T11:15:34Z",
+      "updatedAt": "2026-03-02T17:55:32Z",
+      "closedAt": "2026-03-02T17:55:32Z",
+      "comments": []
+    }
+  ],
   "pulls": [
     {
       "number": 1,
@@ -98,25 +115,42 @@
       "id": "PR_kwDOP_Vg4c7GdQC9",
       "title": "Link patterns can be expressed in a YAML document",
       "url": "https://github.com/mpiraux/draft-piraux-space-constellation-code/pull/2",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mpiraux",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-02-26T07:52:42Z",
-      "updatedAt": "2026-02-27T13:01:35Z",
+      "updatedAt": "2026-03-02T16:58:01Z",
       "baseRepository": "mpiraux/draft-piraux-space-constellation-code",
       "baseRefName": "main",
       "baseRefOid": "a967fe7798ff06e343c82cceb18dd689068f5de5",
       "headRepository": "mpiraux/draft-piraux-space-constellation-code",
       "headRefName": "link_patterns",
-      "headRefOid": "5783aba790ac5b37971c7649ec0c57b3cc348bd9",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "headRefOid": "36905b104bf61007f15e925e508c45cdb374cb5a",
+      "closedAt": "2026-03-02T16:57:55Z",
+      "mergedAt": "2026-03-02T16:57:55Z",
+      "mergedBy": "mpiraux",
+      "mergeCommit": {
+        "oid": "d16e1571864eed4c8b7a2f11460bf744f3328c8d"
+      },
+      "comments": [
+        {
+          "author": "mpiraux",
+          "authorAssociation": "OWNER",
+          "body": "I'll be merging this so that it can be part of -01. I'm open revisiting the conditions part in a future revision. I do think it should remain flexible and have good tuning ability as with other parameters. Defining fixed conditions and needing to update the tool code to add new ones is a burden that we've been already facing.",
+          "createdAt": "2026-03-02T16:46:07Z",
+          "updatedAt": "2026-03-02T16:46:07Z"
+        },
+        {
+          "author": "juanfraire",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Sounds good! I can click on the merge pull request if that's fine with you :)",
+          "createdAt": "2026-03-02T16:47:47Z",
+          "updatedAt": "2026-03-02T16:47:47Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOP_Vg4c7mNvmA",
@@ -176,9 +210,9 @@
           "comments": [
             {
               "originalPosition": 53,
-              "body": "If one puts -latest as a value than they accept that things might break without notice. This choice was loosely formed from my experience following the specification of QUIC extensions, in which extensions often reserve a range of codepoints during development and further partition it per draft revision.\r\n\r\nThe text says `version : Indicates the version of this I-D that the YAML document should be interpreted with.` I'm fine with it as is but we can change it to a MUST.",
+              "body": "If one puts -latest as a value then they accept that things might break without notice. This choice was loosely formed from my experience following the specification of QUIC extensions, in which extensions often reserve a range of codepoints during development and further partition it per draft revision.\r\n\r\nThe text says `version : Indicates the version of this I-D that the YAML document should be interpreted with.` I'm fine with it as is but we can change it to a MUST.",
               "createdAt": "2026-02-27T09:07:29Z",
-              "updatedAt": "2026-02-27T09:07:30Z"
+              "updatedAt": "2026-03-02T08:08:20Z"
             }
           ]
         },
@@ -261,8 +295,82 @@
               "updatedAt": "2026-02-27T13:01:35Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOP_Vg4c7nG-0t",
+          "commit": {
+            "abbreviatedOid": "75fdf43"
+          },
+          "author": "juanfraire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-02T16:48:32Z",
+          "updatedAt": "2026-03-02T16:48:33Z",
+          "comments": [
+            {
+              "originalPosition": 114,
+              "body": "I aagree, Maxime, let's move forward this way and have a consolidated version for the next IETF.",
+              "createdAt": "2026-03-02T16:48:32Z",
+              "updatedAt": "2026-03-02T16:48:33Z"
+            }
+          ]
         }
       ]
+    },
+    {
+      "number": 4,
+      "id": "PR_kwDOP_Vg4c7HZc5K",
+      "title": "Fix and add a ref for Starlink shell 1",
+      "url": "https://github.com/mpiraux/draft-piraux-space-constellation-code/pull/4",
+      "state": "MERGED",
+      "author": "mpiraux",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #3 ",
+      "createdAt": "2026-03-02T17:53:51Z",
+      "updatedAt": "2026-03-02T17:55:31Z",
+      "baseRepository": "mpiraux/draft-piraux-space-constellation-code",
+      "baseRefName": "main",
+      "baseRefOid": "d16e1571864eed4c8b7a2f11460bf744f3328c8d",
+      "headRepository": "mpiraux/draft-piraux-space-constellation-code",
+      "headRefName": "fix_example",
+      "headRefOid": "63678f72ff03a128c091075025673d5599af7472",
+      "closedAt": "2026-03-02T17:55:31Z",
+      "mergedAt": "2026-03-02T17:55:31Z",
+      "mergedBy": "mpiraux",
+      "mergeCommit": {
+        "oid": "3ceba10fda99604e8549f9acef41c0079079cabe"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 5,
+      "id": "PR_kwDOP_Vg4c7Hbd_c",
+      "title": "Fix ABNF shell rule: use continuation instead of incremental alternative",
+      "url": "https://github.com/mpiraux/draft-piraux-space-constellation-code/pull/5",
+      "state": "OPEN",
+      "author": "juanfraire",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The `shell` rule in the ABNF grammar used the incremental alternative operator (`=/`), which per RFC 5234 adds an independent alternative to the existing rule. This made `shell` match either the full Walker pattern *or* an optional `\":\" mean-anomaly` alone \u2014 clearly unintended.\n\nFixed by replacing `shell =/ [ \":\" mean-anomaly ]` with an indented continuation of the existing rule, which is the correct ABNF syntax for an optional trailing element.",
+      "createdAt": "2026-03-02T20:22:56Z",
+      "updatedAt": "2026-03-02T20:22:57Z",
+      "baseRepository": "mpiraux/draft-piraux-space-constellation-code",
+      "baseRefName": "main",
+      "baseRefOid": "3ceba10fda99604e8549f9acef41c0079079cabe",
+      "headRepository": "mpiraux/draft-piraux-space-constellation-code",
+      "headRefName": "fix-abnf-shell-rule",
+      "headRefOid": "f42733fc0f4f8cda2ef3b44c1116ecafd4c089a4",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
