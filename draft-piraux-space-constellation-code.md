@@ -189,7 +189,7 @@ Given that the orbits are distributed around the entire equator plane, there is 
 ~~~ abnf
 constellation = shell [ "+" constellation ]
 shell = walker ":" altitude ":" inclination ":" plane-params
-shell =/ [ ":" mean-anomaly ]
+        [ ":" mean-anomaly ]
 walker = "D" / "S"
 altitude = float
 inclination = float
