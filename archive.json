@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-03T01:07:19.722293+00:00",
+  "timestamp": "2026-03-05T01:05:47.042494+00:00",
   "repo": "mpiraux/draft-piraux-space-constellation-code",
   "labels": [
     {
@@ -351,25 +351,35 @@
       "id": "PR_kwDOP_Vg4c7Hbd_c",
       "title": "Fix ABNF shell rule: use continuation instead of incremental alternative",
       "url": "https://github.com/mpiraux/draft-piraux-space-constellation-code/pull/5",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "juanfraire",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "The `shell` rule in the ABNF grammar used the incremental alternative operator (`=/`), which per RFC 5234 adds an independent alternative to the existing rule. This made `shell` match either the full Walker pattern *or* an optional `\":\" mean-anomaly` alone \u2014 clearly unintended.\n\nFixed by replacing `shell =/ [ \":\" mean-anomaly ]` with an indented continuation of the existing rule, which is the correct ABNF syntax for an optional trailing element.",
       "createdAt": "2026-03-02T20:22:56Z",
-      "updatedAt": "2026-03-02T20:22:57Z",
+      "updatedAt": "2026-03-03T08:08:41Z",
       "baseRepository": "mpiraux/draft-piraux-space-constellation-code",
       "baseRefName": "main",
       "baseRefOid": "3ceba10fda99604e8549f9acef41c0079079cabe",
       "headRepository": "mpiraux/draft-piraux-space-constellation-code",
       "headRefName": "fix-abnf-shell-rule",
       "headRefOid": "f42733fc0f4f8cda2ef3b44c1116ecafd4c089a4",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "closedAt": "2026-03-03T08:08:10Z",
+      "mergedAt": "2026-03-03T08:08:10Z",
+      "mergedBy": "mpiraux",
+      "mergeCommit": {
+        "oid": "05aaeb3af54a9bcf7efa399f7e3fa6a568917aaf"
+      },
+      "comments": [
+        {
+          "author": "mpiraux",
+          "authorAssociation": "OWNER",
+          "body": "Damn, thanks for finding about this and fixing it",
+          "createdAt": "2026-03-03T08:07:00Z",
+          "updatedAt": "2026-03-03T08:07:00Z"
+        }
+      ],
       "reviews": []
     }
   ]
