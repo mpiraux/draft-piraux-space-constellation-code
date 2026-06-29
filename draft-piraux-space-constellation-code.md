@@ -31,8 +31,10 @@ author:
 
 normative:
   RFC5234:
+  RFC8610:
 
 informative:
+  RFC8949:
   TvdLCode:
     author:
       - ins: Tim van der Lee
@@ -95,12 +97,11 @@ This document focuses on describing some elements of the Core and Ground Network
 
 The approach of this document is based on the mission parameters of a satellite constellation. Based on these parameters, the expected position of each satellite within the constellation can then be computed.
 Tools using the notation described in this document are free to choose how they propagate the positions of satellites.
+This may be revised in later versions of this document.
 The two practical options are:
 
 - Keplerian-based propagation, focusing on the theoretical position of satellites.
 - Perturbation-based propagation, such as using Simplified General Perturbations 4 (SGP4) or Simplified Deep Space Perturbations 4 (SDP4) {{HoRo1980}} {{VaCrHuKe2006}}.
-
-This may be revised in later versions of this document.
 
 This version of the specification applies only to circular orbital shells. The rationale for this restriction is that circular orbits are the most common in current satellite constellations and simplify the code syntax. Elliptical orbits, such as those used in Molniya or Flower constellations, are outside the current scope but could be supported in a future extension of this document.
 
@@ -274,111 +275,179 @@ This section provides some examples of how the constellation code can be used to
 
 # Describing links in a shell {#links}
 
-In this section, we extend the code notation with a complementary YAML format to specify the patterns of links within a shell. Each YAML document following the format defined in this I-D specifies a constellation that may be composed of several shells. An example of such a document is as follows:
+In this section, we extend the code notation with the following CDDL schema
+{{RFC8610}} to specify the patterns of links within a shell.
 
-~~~ yaml
-version: draft-piraux-space-constellation-code-01
-shells:
-- code: D:1200:55:400/20/19
-  link_patterns:
-  - rank_offset: 1   # Establish an in-plane link towards the next sat.
-  - plane_offset: 1  # Establish a cross-plane link in a staggered pattern
-    conditions:      # e.g. when only three links are possible.
-    - eq: [{mod: [rank, 2]}, {mod: [plane, 2]}] # rank % 2 == plane % 2
+~~~ cddl
+constellation-specs = {
+  version: tstr,
+  shells: [+ shell-entry],
+}
 
-- code: S:1210:89:52/4/1
-  link_patterns:
-  - rank_offset: 1   # Establish an in-plane link towards the next sat.
+shell-entry = {
+  code: tstr,  ; Constellation code as specified in this document
+  link-patterns: [* link-pattern],
+}
+
+link-pattern = {
+  (
+    (rank-offset: int, ? plane-offset: int) //
+    (? rank-offset: int, plane-offset: int)
+  ),
+  ? conditions: [* condition],
+}
+
+condition = { eq: [expression, expression] }
+
+expression = int
+           / context-element
+           / operation
+
+context-element = "rank" / "plane"
+
+operation = { mod: [expression, expression] }
 ~~~
-{: #constellation-yaml-example artwork-align="center" artwork-name="syntax" title="Example of YAML document specifying a two-shell constellation"}
+{: #constellation-cddl-def artwork-align="left" artwork-name="syntax" title="CDDL schema for constellation links"}
 
-{{constellation-yaml-example}} specifies a two-shell constellation. The first shell is a Walker Delta shell in which satellites have three links towards neighbours. The second one is a Walker Star pattern with two in-plane links per satellite.
+Each data item specifies a constellation that may be composed of several shells.
+An example specifying a two-shell constellation is given below in Extended
+Diagnostic Notation (EDN) {{RFC8949}}:
 
-These patterns are encoded through the `link_patterns` key. It contains a list of patterns with optional conditions. Each pattern can specify how to reach a neighbour given local plane and rank offsets to establish a bidirectional link. For instance, the first pattern of the first shell specifies that a link is formed with the next satellite in the same orbit.
+~~~ edn
+{
+  "version": "draft-piraux-space-constellation-code-03",
+  "shells": [
+    {
+      "code": "D:1200:55:400/20/19",
+      "link-patterns": [
+        { "rank-offset": 1 },             / in-plane link to the next satellite /
+        {
+          "plane-offset": 1,              / cross-plane link in a staggered pattern /
+          "conditions": [                 / e.g., when only three links are possible /
+            { "eq": [{ "mod": ["rank", 2] }, { "mod": ["plane", 2] }] }
+            / rank % 2 == plane % 2 /
+          ]
+        }
+      ]
+    },
+    {
+      "code": "S:1210:89:52/4/1",
+      "link-patterns": [
+        { "rank-offset": 1 }
+      ]
+    }
+  ]
+}
+~~~
+{: #constellation-edn-example artwork-align="center" artwork-name="example" title="Example constellation-specs data item"}
 
-For each pattern, a list of conditions can be expressed with the `conditions` key. These are evaluated for each satellite within the shell to determine whether the corresponding pattern should be applied to form a link. By applying each patterns to all satellites, the set of links within the constellation shell is established.
+{{constellation-edn-example}} specifies a two-shell constellation. The first shell is a Walker Delta shell in which satellites have three links towards neighbours. The second is a Walker Star pattern with two in-plane links per satellite.
+
+These patterns are encoded through the `link-patterns` key. It contains a list of patterns with optional conditions. Each pattern specifies how to reach a neighbour given local plane and rank offsets to establish a bidirectional link. For instance, the first pattern of the first shell specifies that a link is formed with the next satellite in the same orbit.
+
+For each pattern, a list of conditions can be expressed with the `conditions` key. These are evaluated for each satellite within the shell to determine whether the corresponding pattern should be applied to form a link. By applying each pattern to all satellites, the set of links within the constellation shell is established.
 
 ## Detailed specification
 
-### Top-level keys
-
 `version`
 
-: Indicates the version of this I-D that the YAML document should be interpreted with.
+: Indicates the version of this I-D that the data item should be interpreted with.
 
 `shells`
 
-: A list of shells.
+: A list of shell entries.
 
-### Shell
+### Shell entry
 
 `code`
 
 : The shell code following the specification in {{constellation-code}}.
 
-`link_patterns`
+`link-patterns`
 
-: A list of link patterns.
+: A list of link patterns applied to every satellite in the shell.
 
 ### Link pattern
 
-`rank_offset`
+`rank-offset`
 
 : An integer specifying the offset in rank to reach the neighbour for this link.
 
-`plane_offset`
+`plane-offset`
 
 : An integer specifying the offset in plane to reach the neighbour for this link. When this offset causes the plane index to wrap around to the first plane, the rank index of the target satellite is adjusted according to the phasing factor of the shell.
 
-Both types of offset can be included for a single pattern. When one is absent, it is considered to be equal to zero.
-In addition, they naturally wrap around at the boundaries of a shell.
+At least one of the two offsets MUST be present and non-zero.
+The other defaults to zero when absent.
+They naturally wrap around at the boundaries of a shell.
 
 `conditions`
 
-: A list of conditions that must be met for this link to be added.
+: A list of conditions that must all be met for the corresponding link to be added to a given satellite.
 
 ### Condition
 
-Each condition is a predicate on two expressions encoded as mapping. The predicate is the key while the two expressions form a sequence as the value. This version of the document only specifies the equality predicate indicated by the `eq` key.
+A condition is a predicate applied to two expressions. This version of the document only specifies the equality predicate, indicated by the `eq` key.
 
 ### Expression
 
-It can be an integer, a context element or an operation on two expressions.
-Context elements are strings and include `rank` for the current rank index and `plane` for the current plane index of the satellite considered when evaluating a given link pattern.
-
-An operation is encoded as mapping, with the key defining the type of operation and the value containing a sequence with the two expressions.
-This version of the document only specifies the modulo operation indicated by the `mod` key.
+An expression is one of: an integer literal, a context element, or an operation
+on two sub-expressions.
+Context elements are represented by strings and two of them are defined.
+`rank` refers to the current rank index and `plane` refers to the current plane index of the satellite being evaluated.
+This version of the document only specifies the modulo
+operation, indicated by the `mod` key.
 
 # Describing ground stations {#ground-stations}
 
-In this section, we describe the ground stations with a dedicated YAML document format. An example of such a document is as follows:
+In this section, we describe ground stations using the following CDDL schema
+{{RFC8610}}.
 
-~~~ yaml
-version: draft-piraux-space-constellation-code-01
-ground_stations:
-- name: Charleroi
-  latitude_deg: 50.40
-  longitude_deg: 4.25
-  altitude_m: 109.0
-  min_elevation_deg: 10.0
-  antennas: 8
+~~~ cddl
+ground-stations-specs = {
+  version: tstr,
+  ground-stations: [+ ground-station],
+}
+
+ground-station = {
+  name: tstr,
+  latitude: float,      ; degrees
+  longitude: float,     ; degrees
+  altitude: float,      ; metres above Earth surface
+  min-elevation: float, ; degrees
+  antennas: uint,
+}
 ~~~
-{: #ground-stations-yaml-example artwork-align="center" artwork-name="syntax" title="Example of YAML document specifying ground stations"}
+{: #ground-stations-cddl-def artwork-align="left" artwork-name="syntax" title="CDDL schema for ground stations"}
 
-{{ground-stations-yaml-example}} specifies a single ground station with an associated location.
-It has a MEA of 10 degrees and 8 antennas that can be used simultaneously.
+An example specifying a single ground station is as follows:
 
-The detailed specification of the document is as follows.
+~~~ json
+{
+  "version": "draft-piraux-space-constellation-code-02",
+  "ground-stations": [
+    {
+      "name": "Charleroi",
+      "latitude": 50.40,
+      "longitude": 4.25,
+      "altitude": 109.0,
+      "min-elevation": 10.0,
+      "antennas": 8
+    }
+  ]
+}
+~~~
+{: #ground-stations-json-example artwork-align="left" artwork-name="example" title="Example ground-stations-specs data item"}
+
+{{ground-stations-json-example}} specifies a single ground station with an associated location. It has a MEA of 10 degrees and 8 antennas that can be used simultaneously.
 
 ## Detailed specification
 
-### Top-level keys
-
 `version`
 
-: Indicates the version of this I-D that the YAML document should be interpreted with.
+: Indicates the version of this I-D that the data item should be interpreted with.
 
-`ground_stations`
+`ground-stations`
 
 : A list of ground stations.
 
@@ -388,25 +457,25 @@ The detailed specification of the document is as follows.
 
 : A string to identify the ground station.
 
-`latitude_deg`
+`latitude`
 
-: The latitude of the location of the ground station, expressed in degrees.
+: The latitude of the ground station location, expressed in degrees.
 
-`longitude_deg`
+`longitude`
 
-: The longitude of the location of the ground station, expressed in degrees.
+: The longitude of the ground station location, expressed in degrees.
 
-`altitude_m`
+`altitude`
 
-: The altitude of the location of the ground station, expressed in meters.
+: The altitude of the ground station location, expressed in metres above the Earth's surface.
 
-`min_elevation_deg`
+`min-elevation`
 
-: The Minimum Elevation Angle above which Feeder Links can be established.
+: The Minimum Elevation Angle above which Feeder Links can be established, expressed in degrees.
 
 `antennas`
 
-: The number of antennas that can establish Feeder Links in parallel.
+: The number of antennas available to establish Feeder Links simultaneously.
 
 # Considerations for future versions of this document {#considerations}
 
