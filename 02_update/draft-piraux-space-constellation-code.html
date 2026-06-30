@@ -12,21 +12,22 @@
 To improve the analysis of such non-terrestrial networks across various tools developed by the network community, this document proposes a notation to describe common constellation patterns.
 In addition, this document may serve as an introduction to satellite constellations for IETF participants. 
     " name="description">
-<meta content="xml2rfc 3.31.0" name="generator">
+<meta content="xml2rfc 3.34.0" name="generator">
 <meta content="draft-piraux-space-constellation-code-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.31.0
-    Python 3.12.12
-    ConfigArgParse 1.7
+  xml2rfc 3.34.0
+    Python 3.14.5
+    ConfigArgParse 1.7.5
     google-i18n-address 3.1.1
     intervaltree 3.2.1
     Jinja2 3.1.6
-    lxml 6.0.2
-    platformdirs 4.5.1
+    lxml 6.1.1
+    natsort 8.4.0
+    platformdirs 4.10.0
     pycountry 24.6.1
     PyYAML 6.0.3
-    requests 2.32.5
-    wcwidth 0.3.0
+    requests 2.33.1
+    wcwidth 0.8.1
 -->
 <link href="draft-piraux-space-constellation-code.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -293,16 +294,19 @@ h1, h2, h3, h4, h5, h6 {
   font-size-adjust: 0.5;
   color: var(--title-color);
 }
-h1#title {
-  font-size: 32px;
-  line-height: 40px;
-  clear: both;
-}
-h1#title, h1#rfcnum {
-  margin: 1.5em 0 0.2em;
-}
-h1#rfcnum + h1#title {
-  margin: 0.2em 0;
+h1 {
+  &#title {
+    font-size: 32px;
+    line-height: 40px;
+    clear: both;
+    margin: 1.5em 0 0.2em;
+  }
+  &#rfcnum {
+    margin: 1.5em 0 0.2em;
+    & + h1#title {
+      margin: 0.2em 0;
+    }
+  }
 }
 
 h1, h2, h3 {
@@ -322,10 +326,10 @@ h4, h5, h6 {
 #abstract+p {
   font-size: 18px;
   line-height: 24px;
-}
-#abstract+p code, #abstract+p samp, #abstract+p tt {
-  font-size: 16px;
-  line-height: 0;
+  & code, & samp, & tt {
+    font-size: 16px;
+    line-height: 0;
+  }
 }
 
 p {
@@ -336,59 +340,59 @@ p {
 div {
   margin: 0;
 }
-.alignRight.art-text {
-  background-color: var(--highlight-color);
-  border: 1px solid var(--line-color);
-  border-radius: 3px;
-  padding: 0.5em 1em 0;
-  margin-bottom: 0.5em;
-}
-.alignRight.art-text pre {
-  padding: 0;
-  width: auto;
-}
 .alignRight {
   margin: 1em 0;
-}
-.alignRight > *:first-child {
-  border: none;
-  margin: 0;
-  float: right;
-  clear: both;
-}
-.alignRight > *:nth-child(2) {
-  clear: both;
-  display: block;
-  border: none;
+  &.art-text {
+    background-color: var(--highlight-color);
+    border: 1px solid var(--line-color);
+    border-radius: 3px;
+    padding: 0.5em 1em 0;
+    margin-bottom: 0.5em;
+    & pre {
+      padding: 0;
+      width: auto;
+    }
+  }
+  & > *:first-child {
+    border: none;
+    margin: 0;
+    float: right;
+    clear: both;
+  }
+  & > *:nth-child(2) {
+    clear: both;
+    display: block;
+    border: none;
+  }
 }
 svg {
   display: block;
-}
-/* font-family isn't space-separated, but =~ will have to do */
-svg[font-family~="monospace" i], svg [font-family~="monospace" i] {
-  font-family: var(--font-mono);
-}
-.alignCenter.art-text {
-  background-color: var(--highlight-color);
-  border: 1px solid var(--line-color);
-  border-radius: 3px;
-  padding: 0.5em 1em 0;
-  margin-bottom: 0.5em;
-}
-.alignCenter.art-text pre {
-  padding: 0;
-  width: auto;
+  /* font-family isn't space-separated, but =~ will have to do */
+  &[font-family~="monospace" i], & [font-family~="monospace" i] {
+    font-family: var(--font-mono);
+  }
 }
 .alignCenter {
   margin: 1em 0;
-}
-.alignCenter > *:first-child {
-  border: none;
-  /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
-     support flexbox yet.
-  */
-  display: table;
-  margin: 0 auto;
+  &.art-text {
+    background-color: var(--highlight-color);
+    border: 1px solid var(--line-color);
+    border-radius: 3px;
+    padding: 0.5em 1em 0;
+    margin-bottom: 0.5em;
+    & pre {
+      padding: 0;
+      width: auto;
+    }
+  }
+  & > *:first-child {
+    border: none;
+    /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
+       support flexbox yet.
+    */
+    display: table;
+    margin: 0 auto;
+  }
 }
 
 /* lists */
@@ -426,26 +430,25 @@ dl {
     --indent: 5ch;
     & > dt {
       min-width: calc(var(--indent) - 2ch);
+      float: none;
     }
-  }
-  &.olPercent > dt {
-    float: none;
   }
 
   dl > dd > & {
     margin-top: 0.5em;
     margin-bottom: 0;
   }
-}
-dl:not(.dlNewline) > dt {
-  float: left;
-  margin-right: 2ch;
-  min-width: 8ch;
-}
-dl > dd {
-  margin-bottom: .8em;
-  margin-left: var(--indent) !important; /* stupid element overrides */
-  min-height: 2ex;
+
+  &:not(.dlNewline) > dt {
+    float: left;
+    margin-right: 2ch;
+    min-width: 8ch;
+  }
+  & > dd {
+    margin-bottom: .8em;
+    margin-left: var(--indent) !important; /* stupid element overrides */
+    min-height: 2ex;
+  }
 }
 :is(dl.compact, .dlCompact) > dd {
   margin-bottom: 0;
@@ -461,20 +464,22 @@ dl > dd {
 }
 
 /* links */
-a, a[href].selfRef:hover {
+a {
   text-decoration: none;
+  &[href] {
+    color: var(--link-color);
+    &:hover { text-decoration: underline; }
+    &.selfRef {
+      color: var(--text-color);
+      &:hover {
+        text-decoration: none;
+        background-color: var(--highlight-color);
+      }
+    }
+  }
 }
-a[href] {
-  color: var(--link-color);
-}
-a[href].selfRef, .iref + a[href].internal {
+.iref + a[href].internal {
   color: var(--text-color);
-}
-a[href]:hover {
-  text-decoration: underline;
-}
-a[href].selfRef:hover {
-  background-color: var(--highlight-color);
 }
 a.xref:is(.cite, .auto), :is(#status-of-memo, #copyright) a {
   white-space: nowrap;
@@ -510,9 +515,9 @@ img {
 figure {
   margin: 0.5em 0;
   padding: 0;
-}
-figure blockquote {
-  margin: 0.8em 0.4em 0.4em;
+  & blockquote {
+    margin: 0.8em 0.4em 0.4em;
+  }
 }
 figcaption, caption {
   font-style: italic;
@@ -522,17 +527,19 @@ figcaption, caption {
 }
 @media screen {
   /* Auto-collapse boilerplate. */
-  :is(#status-of-memo, #copyright) p {
-    margin: -2px 0;
-    max-height: 0;
-    transition: max-height 2s ease, margin 0.5s ease 0.5s;
-    overflow: hidden;
-  }
-  :is(#status-of-memo, #copyright):hover p,
-  :is(#status-of-memo, #copyright) h2:target ~ p {
-    margin: 0.5em 0;
-    max-height: 500px;
-    overflow: auto;
+  :is(#status-of-memo, #copyright) {
+    & p {
+      margin: -2px 0;
+      max-height: 0;
+      transition: max-height 2s ease, margin 0.5s ease 0.5s;
+      overflow: hidden;
+    }
+    &:hover p,
+    & h2:target ~ p {
+      margin: 0.5em 0;
+      max-height: 500px;
+      overflow: auto;
+    }
   }
   pre, svg {
     display: inline-block;
@@ -582,25 +589,17 @@ table {
   max-width: 100%;
   margin: 0 0 1em;
   border-collapse: collapse;
-}
-table.right {
-  margin-left: auto;
-}
-table.center {
-  margin-left: auto;
-  margin-right: auto;
-}
-table.left {
-  margin-right: auto;
-}
-table .text-left {
-  text-align: left;
-}
-table .text-center {
-  text-align: center;
-}
-table .text-right {
-  text-align: right;
+  &.right { margin-left: auto; }
+  &.center { margin-left: auto; margin-right: auto; }
+  &.left { margin-right: auto; }
+  & .text-left { text-align: left; }
+  & .text-center { text-align: center; }
+  & .text-right { text-align: right; }
+  & caption {
+    margin: 0;
+    padding: 3px 0 3px 1em;
+  }
+  & p { margin: 0; }
 }
 
 thead, tbody {
@@ -620,13 +619,6 @@ th {
 :is(tr:nth-child(2n+1), thead+tbody > tr:nth-child(2n)) > td {
   background-color: var(--highlight-color);
 }
-table caption {
-  margin: 0;
-  padding: 3px 0 3px 1em;
-}
-table p {
-  margin: 0;
-}
 
 /* pilcrow */
 a.pilcrow {
@@ -637,18 +629,16 @@ a.pilcrow {
     color: var(--pilcrow-weak);
     &:hover { text-decoration: none; }
   }
-}
-@media not print {
-  :hover > a.pilcrow, a.pilcrow:focus {
-    opacity: 1;
+  @media not print {
+    :hover > &, &:focus {
+      opacity: 1;
+    }
+    &[href]:hover {
+      color: var(--pilcrow-strong);
+      background-color: transparent;
+    }
   }
-  a.pilcrow[href]:hover {
-    color: var(--pilcrow-strong);
-    background-color: transparent;
-  }
-}
-@media print {
-  a.pilcrow {
+  @media print {
     display: none;
   }
 }
@@ -707,9 +697,9 @@ sub, sup {
   font-size: 0.9em;
   font-style: italic;
   margin-top: 2em;
-}
-.docInfo .prepared {
-  float: right;
+  & .prepared {
+    float: right;
+  }
 }
 
 /* table of contents */
@@ -799,23 +789,27 @@ hr.addr {
   max-width: calc(100% - 16px);
 }
 @media (min-width: 500px) {
-  #authors-addresses > section {
-    column-count: 2;
-    column-gap: 20px;
-  }
-  #authors-addresses > section > h2 {
-    column-span: all;
-  }
-  /* hack for break-inside: avoid-column */
-  #authors-addresses address {
-    display: inline-block;
-    break-inside: avoid-column;
+  #authors-addresses {
+    & > section {
+      column-count: 2;
+      column-gap: 20px;
+    }
+    & > section > h2 {
+      column-span: all;
+    }
+    /* hack for break-inside: avoid-column */
+    & address {
+      display: inline-block;
+      break-inside: avoid-column;
+    }
   }
 }
 
 /* Comments */
-.rfcEditorRemove p:first-of-type {
-  font-style: italic;
+.rfcEditorRemove {
+  & p:first-of-type {
+    font-style: italic;
+  }
 }
 .cref {
   background-color: rgba(249, 232, 105, 0.3);
@@ -826,19 +820,21 @@ hr.addr {
 }
 
 @media screen {
-  #toc nav {
-    font-family: var(--font-title);
-    font-weight: 360;
-    & > ul { margin-bottom: 2em; }
-    & ul {
-      margin: 0 0 0 4px;
-      & :is(p, li) {
-        margin: 2px 0;
+  #toc {
+    & nav {
+      font-family: var(--font-title);
+      font-weight: 360;
+      & > ul { margin-bottom: 2em; }
+      & ul {
+        margin: 0 0 0 4px;
+        & :is(p, li) {
+          margin: 2px 0;
+        }
       }
     }
-  }
-  #toc a.toplink {
-    float: right;
+    & a.toplink {
+      float: right;
+    }
   }
 }
 @media not screen {
@@ -859,54 +855,54 @@ hr.addr {
     margin: 0;
     border-bottom: 1px solid #ccc;
     opacity: 0.6;
-  }
-  #toc h2 {
-    margin: 0;
-    padding: 2px 0 2px 6px;
-    padding-right: 1em;
-    font-size: 18px;
-    line-height: 24px;
-    min-width: 190px;
-    text-align: right;
-    background-color: #444;
-    color: white;
-    cursor: pointer;
-    &::before { /* css hamburger */
-      float: right;
-      position: relative;
-      width: 1em;
-      height: 1px;
-      left: -164px;
-      margin: 8px 0 0 0;
-      background: white none repeat scroll 0 0;
-      box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
-      content: "";
+    & h2 {
+      margin: 0;
+      padding: 2px 0 2px 6px;
+      padding-right: 1em;
+      font-size: 18px;
+      line-height: 24px;
+      min-width: 190px;
+      text-align: right;
+      background-color: #444;
+      color: white;
+      cursor: pointer;
+      &::before { /* css hamburger */
+        float: right;
+        position: relative;
+        width: 1em;
+        height: 1px;
+        left: -164px;
+        margin: 8px 0 0 0;
+        background: white none repeat scroll 0 0;
+        box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+        content: "";
+      }
     }
-  }
-  #toc nav {
-    display: none;
-    background-color: var(--background-color);
-    padding: 0.5em 1em 1em;
-    overflow: auto;
-    overscroll-behavior: contain;
-    height: calc(100vh - 48px);
-    border-left: 1px solid #ddd;
-  }
-  #toc.active {
-    opacity: 1;
-    & nav { display: block; }
-  }
-  /* Make the collapsed ToC header render white on gray also when it's a link */
-  #toc h2 a,
-  #toc h2 a:is(:link, :focus, :hover),
-  #toc a.toplink,
-  #toc a.toplink:hover {
-    color: white;
-    background-color: #444;
-    text-decoration: none;
-  }
-  #toc a.toplink {
-    margin: 2px 0.5em 0;
+    & nav {
+      display: none;
+      background-color: var(--background-color);
+      padding: 0.5em 1em 1em;
+      overflow: auto;
+      overscroll-behavior: contain;
+      height: calc(100vh - 48px);
+      border-left: 1px solid #ddd;
+    }
+    &.active {
+      opacity: 1;
+      & nav { display: block; }
+    }
+    /* Make the collapsed ToC header render white on gray also when it's a link */
+    & h2 a,
+    & h2 a:is(:link, :focus, :hover),
+    & a.toplink,
+    & a.toplink:hover {
+      color: white;
+      background-color: #444;
+      text-decoration: none;
+    }
+    & a.toplink {
+      margin: 2px 0.5em 0;
+    }
   }
 }
 
@@ -925,26 +921,26 @@ hr.addr {
     margin: 0;
     padding: 0;
     z-index: 1;
-  }
-  #toc h2 {
-    margin: 0;
-    padding: 0.25em 1em 1em 0;
-  }
-  #toc nav {
-    display: block;
-    height: calc(90vh - 84px);
-    bottom: 0;
-    padding: 0.5em 0 2em;
-    overflow: auto;
-    overscroll-behavior: contain;
-    scrollbar-width: thin;
+    & h2 {
+      margin: 0;
+      padding: 0.25em 1em 1em 0;
+    }
+    & nav {
+      display: block;
+      height: calc(90vh - 84px);
+      bottom: 0;
+      padding: 0.5em 0 2em;
+      overflow: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+    }
+    & a.toplink {
+      margin: 8px 0.5em 0;
+    }
   }
   img { /* future proofing */
     max-width: 100%;
     height: auto;
-  }
-  #toc a.toplink {
-    margin: 8px 0.5em 0;
   }
 }
 
@@ -960,12 +956,13 @@ hr.addr {
   #n-copyright-notice {
     border-bottom: none;
   }
-  #toc, #n-introduction {
-    page-break-before: always;
-  }
   #toc {
+    page-break-before: always;
     border-top: none;
     padding-top: 0;
+  }
+  #n-introduction {
+    page-break-before: always;
   }
   figure, pre, .vcard {
     page-break-inside: avoid;
@@ -1027,17 +1024,19 @@ hr.addr {
 }
 
 /* SVG Trick: a prefix match works because only black and white are allowed */
-svg :is([stroke="black"], [stroke^="#000"]) {
-  stroke: var(--text-color);
-}
-svg :is([stroke="white"], [stroke^="#fff"]) {
-  stroke: var(--background-color);
-}
-svg :is([fill="black"], [fill^="#000"], :not([fill])) {
-  fill: var(--text-color);
-}
-svg :is([fill="white"], [fill^="#fff"]) {
-  fill: var(--background-color);
+svg {
+  & :is([stroke="black"], [stroke^="#000"]) {
+    stroke: var(--text-color);
+  }
+  & :is([stroke="white"], [stroke^="#fff"]) {
+    stroke: var(--background-color);
+  }
+  & :is([fill="black"], [fill^="#000"], :not([fill])) {
+    fill: var(--text-color);
+  }
+  & :is([fill="white"], [fill^="#fff"]) {
+    fill: var(--background-color);
+  }
 }
 </style>
 
@@ -1047,11 +1046,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Constellation code</td>
-<td class="right">March 2026</td>
+<td class="right">June 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Piraux &amp; Fraire</td>
-<td class="center">Expires 3 September 2026</td>
+<td class="center">Expires 1 January 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1064,12 +1063,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-piraux-space-constellation-code-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-03-02" class="published">2 March 2026</time>
+<time datetime="2026-06-30" class="published">30 June 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-09-03">3 September 2026</time></dd>
+<dd class="expires"><time datetime="2027-01-01">1 January 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1125,7 +1124,7 @@ In addition, this document may serve as an introduction to satellite constellati
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 3 September 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 1 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1186,57 +1185,67 @@ In addition, this document may serve as an introduction to satellite constellati
                 <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-detailed-specification" class="internal xref">Detailed specification</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1.2.1">
-                    <p id="section-toc.1-1.6.2.1.2.1.1"><a href="#section-6.1.1" class="auto internal xref">6.1.1</a>.  <a href="#name-top-level-keys" class="internal xref">Top-level keys</a></p>
+                    <p id="section-toc.1-1.6.2.1.2.1.1"><a href="#section-6.1.1" class="auto internal xref">6.1.1</a>.  <a href="#name-shell-entry" class="internal xref">Shell entry</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1.2.2">
-                    <p id="section-toc.1-1.6.2.1.2.2.1"><a href="#section-6.1.2" class="auto internal xref">6.1.2</a>.  <a href="#name-shell" class="internal xref">Shell</a></p>
+                    <p id="section-toc.1-1.6.2.1.2.2.1"><a href="#section-6.1.2" class="auto internal xref">6.1.2</a>.  <a href="#name-link-pattern" class="internal xref">Link pattern</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1.2.3">
-                    <p id="section-toc.1-1.6.2.1.2.3.1"><a href="#section-6.1.3" class="auto internal xref">6.1.3</a>.  <a href="#name-link-pattern" class="internal xref">Link pattern</a></p>
+                    <p id="section-toc.1-1.6.2.1.2.3.1"><a href="#section-6.1.3" class="auto internal xref">6.1.3</a>.  <a href="#name-condition" class="internal xref">Condition</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1.2.4">
-                    <p id="section-toc.1-1.6.2.1.2.4.1"><a href="#section-6.1.4" class="auto internal xref">6.1.4</a>.  <a href="#name-condition" class="internal xref">Condition</a></p>
-</li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1.2.5">
-                    <p id="section-toc.1-1.6.2.1.2.5.1"><a href="#section-6.1.5" class="auto internal xref">6.1.5</a>.  <a href="#name-expression" class="internal xref">Expression</a></p>
+                    <p id="section-toc.1-1.6.2.1.2.4.1"><a href="#section-6.1.4" class="auto internal xref">6.1.4</a>.  <a href="#name-expression" class="internal xref">Expression</a></p>
 </li>
                 </ul>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
-            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-considerations-for-future-v" class="internal xref">Considerations for future versions of this document</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
-            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-references" class="internal xref">References</a></p>
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-describing-ground-stations" class="internal xref">Describing ground stations</a></p>
 <ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.1">
-                <p id="section-toc.1-1.10.2.1.1"><a href="#section-10.1" class="auto internal xref">10.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
+                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-detailed-specification-2" class="internal xref">Detailed specification</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1.2.1">
+                    <p id="section-toc.1-1.7.2.1.2.1.1"><a href="#section-7.1.1" class="auto internal xref">7.1.1</a>.  <a href="#name-ground-station" class="internal xref">Ground station</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.2">
-                <p id="section-toc.1-1.10.2.2.1"><a href="#section-10.2" class="auto internal xref">10.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+                </ul>
 </li>
             </ul>
 </li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-considerations-for-future-v" class="internal xref">Considerations for future versions of this document</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+</li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
-            <p id="section-toc.1-1.11.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-changelog" class="internal xref">Changelog</a></p>
+            <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-references" class="internal xref">References</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.1">
-                <p id="section-toc.1-1.11.2.1.1"><a href="#appendix-A.1" class="auto internal xref">A.1</a>.  <a href="#name-since-draft-piraux-space-co" class="internal xref">Since draft-piraux-space-constellation-code-00</a></p>
+                <p id="section-toc.1-1.11.2.1.1"><a href="#section-11.1" class="auto internal xref">11.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.2">
+                <p id="section-toc.1-1.11.2.2.1"><a href="#section-11.2" class="auto internal xref">11.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
-            <p id="section-toc.1-1.12.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+            <p id="section-toc.1-1.12.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-changelog" class="internal xref">Changelog</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1">
+                <p id="section-toc.1-1.12.2.1.1"><a href="#appendix-A.1" class="auto internal xref">A.1</a>.  <a href="#name-since-draft-piraux-space-co" class="internal xref">Since draft-piraux-space-constellation-code-00</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
-            <p id="section-toc.1-1.13.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.13.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
+            <p id="section-toc.1-1.14.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -1247,13 +1256,57 @@ In addition, this document may serve as an introduction to satellite constellati
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">The network topology of a satellite constellation is heavily influenced by its orbital characteristics. With recent technologies enabling Optical Inter-Satellite Links (OISL) between satellites, a network is formed by establishing links between neighbour satellites. The resulting topology can be dynamic as the distance between neighbour satellites changes throughout their orbital period. A common notation for the network community could improve the reproducibility of evaluations, measurements and simulations of satellite constellation networks.<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">The true position of a satellite is often represented using a Two-Line Element set (TLE). A TLE contains a number of fields describing the orbital elements at a given time of a given satellite. Combined with a simplified perturbation model, the TLE can be used to predict the future position and velocity of the satellite relatively accurately. However, when studying satellite constellations, TLEs may not be appropriate. First, they assume each satellite has a known absolute position, which is derived from the launch time and parameters which may not be known at the time of study. Second, they involve complex calculations given the chosen perturbation model which may not scale well to large-scale experiments. Third, TLEs are not sufficient to determine how the links are established within the constellation as they do not indicate its characteristics but only the position of its satellites.<a href="#section-1-2" class="pilcrow">¶</a></p>
-<p id="section-1-3">The approach of this document is based on the mission parameters of a satellite constellation. Based on these parameters, the expected position of each satellite within the constellation can then be computed. While this approach does not capture the small discrepancies that can occur during the launch and operation of the satellites, we argue that it is sufficient in our context.<a href="#section-1-3" class="pilcrow">¶</a></p>
-<p id="section-1-4">This version of the specification applies only to circular orbital shells. The rationale for this restriction is that circular orbits are the most common in current satellite constellations and simplify the code syntax. Elliptical orbits, such as those used in Molniya or Flower constellations, are outside the current scope but could be supported in a future extension of this document.<a href="#section-1-4" class="pilcrow">¶</a></p>
-<p id="section-1-5">The notation defined in this document can also specify patterns for links within a shell of a constellation. Each pattern is repeated to establish the connectivity of a satellite with its neighbours within the shell. This is inspired by the works of network researchers on constellation network topology design <span>[<a href="#BhSi2019" class="cite xref">BhSi2019</a>]</span>.<a href="#section-1-5" class="pilcrow">¶</a></p>
-<p id="section-1-6">The rest of this document is organised as follows.
-<a href="#satellite-constellations" class="auto internal xref">Section 3</a> introduces two variants of the Walker pattern for orbital shells. These are used to define many of the existing satellite constellations. <a href="#constellation-code" class="auto internal xref">Section 4</a> defines the constellation code syntax using an ABNF grammar <span>[<a href="#RFC5234" class="cite xref">RFC5234</a>]</span> and the code semantics. <a href="#examples-of-constellation-codes" class="auto internal xref">Section 5</a> contains examples of existing constellations defined using the constellation code. <a href="#links" class="auto internal xref">Section 6</a> augments the constellation code with a pattern notation to describe links within a shell. Finally, <a href="#considerations" class="auto internal xref">Section 7</a> concludes with considerations for future versions of this document.<a href="#section-1-6" class="pilcrow">¶</a></p>
+<p id="section-1-1">A satellite constellation spans three networks to deliver their services as illustrated by <a href="#fig-satellite-constellation-networks" class="auto internal xref">Figure 1</a>.
+First, an Access Network enables User Equipment (UE) to connect to the constellation.
+This is realised by the establishment of a Service Link to exchange UE traffic.
+Then, the UE traffic is forwarded over a Core Network consisting of the different interconnected satellites.
+Finally, the UE traffic is sent back to ground via the Feeder Link, which connects a satellite to a ground station.
+A ground station is usually colocated with the infrastructure required to deliver the service.
+In the case of Internet broadband access, this can be a Point-of-Presence (PoP) connecting to the Internet.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<span id="name-a-satellite-constellation-s"></span><div id="fig-satellite-constellation-networks">
+<figure id="figure-1">
+        <div class="alignCenter art-text artwork" id="section-1-2.1">
+<pre>
+ Access Network |         Core Network         |    Ground Network
+                |                              |
+  UE ------- Service ---&gt; *---*---*---* ---- Feeder --&gt; Ground --- PoP
+              Link        :   :   :   :       Link      Station
+                |         *---*---*---*        |
+                |                              |
+</pre>
+</div>
+<figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
+<a href="#name-a-satellite-constellation-s" class="selfRef">A satellite constellation spans three networks</a>
+        </figcaption></figure>
+</div>
+<p id="section-1-3">The network topology of the Core Network of a satellite constellation is heavily influenced by its orbital characteristics. With recent technologies enabling Optical Inter-Satellite Links (OISL) between satellites, a network is formed in space by establishing links between neighbour satellites. The resulting topology can be dynamic as the distance between neighbour satellites changes throughout their orbital period.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-4">A key characteristic of satellite constellations is the ephemeral nature of the Feeder Links.
+They may only be established when a satellite and a ground station are in range of each other.
+Typically, ground stations can establish links within a defined cone of coverage.
+This cone is often characterised by a Minimum Elevation Angle (MEA), such that Feeder Links can only be established when their elevation is above the MEA.
+Consequently, satellites are often engineered such that Feeder Links are feasible within the entire cone of coverage of ground stations.
+A ground station often includes several antennas such that a certain number of Feeder Links can be established from a given location.
+Satellites may include several antennas as well to establish several Feeder Links or enable make-before-break transitions.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-5">A common notation for the network community to describe these constellations could improve the reproducibility of evaluations, measurements and simulations of satellite constellation networks.
+This document focuses on describing some elements of the Core and Ground Networks.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-6">The approach of this document is based on the mission parameters of a satellite constellation. Based on these parameters, the expected position of each satellite within the constellation can then be computed.
+Tools using the notation described in this document are free to choose how they propagate the positions of satellites.
+This may be revised in later versions of this document.
+The two practical options are:<a href="#section-1-6" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-1-7.1">
+          <p id="section-1-7.1.1">Keplerian-based propagation, focusing on the theoretical position of satellites.<a href="#section-1-7.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-1-7.2">
+          <p id="section-1-7.2.1">Perturbation-based propagation, such as using Simplified General Perturbations 4 (SGP4) or Simplified Deep Space Perturbations 4 (SDP4) <span>[<a href="#HoRo1980" class="cite xref">HoRo1980</a>]</span> <span>[<a href="#VaCrHuKe2006" class="cite xref">VaCrHuKe2006</a>]</span>.<a href="#section-1-7.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-1-8">This version of the specification applies only to circular orbital shells. The rationale for this restriction is that circular orbits are the most common in current satellite constellations and simplify the code syntax. Elliptical orbits, such as those used in Molniya or Flower constellations, are outside the current scope but could be supported in a future extension of this document.<a href="#section-1-8" class="pilcrow">¶</a></p>
+<p id="section-1-9">The notation defined in this document can also specify patterns for links within a shell of a constellation. Each pattern is repeated to establish the connectivity of a satellite with its neighbours within the shell. This is inspired by the works of network researchers on constellation network topology design <span>[<a href="#BhSi2019" class="cite xref">BhSi2019</a>]</span>.<a href="#section-1-9" class="pilcrow">¶</a></p>
+<p id="section-1-10">The rest of this document is organised as follows.
+<a href="#satellite-constellations" class="auto internal xref">Section 3</a> introduces two variants of the Walker pattern for orbital shells. These are used to define many of the existing satellite constellations. <a href="#constellation-code" class="auto internal xref">Section 4</a> defines the constellation code syntax using an ABNF grammar <span>[<a href="#RFC5234" class="cite xref">RFC5234</a>]</span> and the code semantics. <a href="#examples-of-constellation-codes" class="auto internal xref">Section 5</a> contains examples of existing constellations defined using the constellation code. <a href="#links" class="auto internal xref">Section 6</a> augments the constellation code with a pattern notation to describe links within a shell.
+<a href="#ground-stations" class="auto internal xref">Section 7</a> defines how ground stations can be described.
+Finally, <a href="#considerations" class="auto internal xref">Section 8</a> concludes with considerations for future versions of this document.<a href="#section-1-10" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="conventions-and-definitions">
@@ -1297,11 +1350,11 @@ Orbital planes are distributed in a complementary manner, i.e., they share some 
           <h4 id="name-walker-star">
 <a href="#section-3.1.1" class="section-number selfRef">3.1.1. </a><a href="#name-walker-star" class="section-name selfRef">Walker Star</a>
           </h4>
-<p id="section-3.1.1-1"><a href="#fig-walker-star" class="auto internal xref">Figure 1</a> is an illustration of a Walker Star constellation considering the Earth equator as horizontal in the Figure. The orbit trajectories are depicted by a dashed line, while satellites and their travel direction are indicated by arrow heads.<a href="#section-3.1.1-1" class="pilcrow">¶</a></p>
-<p id="section-3.1.1-2">The orbits of a Walker Star constellation typically have an inclination close to 90 degrees with respect to the equator plane, though this is not a geometric constraint and other inclinations are possible. Given that they are distributed over 180 degrees around the equator plane, one half-sphere has satellites ascending from the south pole to the north pole while the other has them descending from north pole to south pole. This is depicted on the two sides of <a href="#fig-walker-star" class="auto internal xref">Figure 1</a>.
+<p id="section-3.1.1-1"><a href="#fig-walker-star" class="auto internal xref">Figure 2</a> is an illustration of a Walker Star constellation considering the Earth equator as horizontal in the Figure. The orbit trajectories are depicted by a dashed line, while satellites and their travel direction are indicated by arrow heads.<a href="#section-3.1.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.1.1-2">The orbits of a Walker Star constellation typically have an inclination close to 90 degrees with respect to the equator plane, though this is not a geometric constraint and other inclinations are possible. Given that they are distributed over 180 degrees around the equator plane, one half-sphere has satellites ascending from the south pole to the north pole while the other has them descending from north pole to south pole. This is depicted on the two sides of <a href="#fig-walker-star" class="auto internal xref">Figure 2</a>.
 Over the south and north poles, all orbits are crossing paths before going over the other half-sphere.<a href="#section-3.1.1-2" class="pilcrow">¶</a></p>
 <span id="name-a-walker-star-constellation"></span><div id="fig-walker-star">
-<figure id="figure-1">
+<figure id="figure-2">
             <div class="alignCenter art-text artwork" id="section-3.1.1-3.1">
 <pre>
           /  / \  \
@@ -1319,14 +1372,14 @@ Over the south and north poles, all orbits are crossing paths before going over 
           \  \ /  /
 </pre>
 </div>
-<figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
+<figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
 <a href="#name-a-walker-star-constellation" class="selfRef">A Walker Star constellation</a>
             </figcaption></figure>
 </div>
-<p id="section-3.1.1-4">In a Walker Star constellation, a seam can be observed at the start and end of the orbit distribution around the equator plane. That is the first orbit (resp. last orbit) is next to the last orbit (resp. first orbit) going in the opposite direction of the sphere. It can be observed at the center of the <a href="#fig-walker-star" class="auto internal xref">Figure 1</a>. The seam effect in Walker Star constellations may limit cross-plane ISL links at the seam boundary, though cross-plane links are still possible elsewhere; for instance, the Iridium constellation uses a Walker Star pattern with cross-plane ISLs. However, the Delta variant is often preferred for OISL-capable constellations due to the absence of the seam effect.<a href="#section-3.1.1-4" class="pilcrow">¶</a></p>
-<p id="section-3.1.1-5"><a href="#fig-walker-star-topo" class="auto internal xref">Figure 2</a> illustrates a part of a possible network topology for Walker Star constellations, with four orbital planes depicted vertically, each containing three satellites. In this example, links are only established in-plane, i.e., within the same orbit, though cross-plane links are also possible. Each orbit forms a ring, where the last satellite is connected to the first satellite.<a href="#section-3.1.1-5" class="pilcrow">¶</a></p>
+<p id="section-3.1.1-4">In a Walker Star constellation, a seam can be observed at the start and end of the orbit distribution around the equator plane. That is the first orbit (resp. last orbit) is next to the last orbit (resp. first orbit) going in the opposite direction of the sphere. It can be observed at the center of the <a href="#fig-walker-star" class="auto internal xref">Figure 2</a>. The seam effect in Walker Star constellations may limit cross-plane ISL links at the seam boundary, though cross-plane links are still possible elsewhere; for instance, the Iridium constellation uses a Walker Star pattern with cross-plane ISLs. However, the Delta variant is often preferred for OISL-capable constellations due to the absence of the seam effect.<a href="#section-3.1.1-4" class="pilcrow">¶</a></p>
+<p id="section-3.1.1-5"><a href="#fig-walker-star-topo" class="auto internal xref">Figure 3</a> illustrates a part of a possible network topology for Walker Star constellations, with four orbital planes depicted vertically, each containing three satellites. In this example, links are only established in-plane, i.e., within the same orbit, though cross-plane links are also possible. Each orbit forms a ring, where the last satellite is connected to the first satellite.<a href="#section-3.1.1-5" class="pilcrow">¶</a></p>
 <span id="name-a-walker-star-constellation-"></span><div id="fig-walker-star-topo">
-<figure id="figure-2">
+<figure id="figure-3">
             <div class="alignCenter art-text artwork" id="section-3.1.1-6.1">
 <pre>
   :        :        :        :
@@ -1348,7 +1401,7 @@ Over the south and north poles, all orbits are crossing paths before going over 
   :        :        :        :
 </pre>
 </div>
-<figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
+<figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
 <a href="#name-a-walker-star-constellation-" class="selfRef">A Walker Star constellation network topology</a>
             </figcaption></figure>
 </div>
@@ -1359,10 +1412,10 @@ Over the south and north poles, all orbits are crossing paths before going over 
           <h4 id="name-walker-delta">
 <a href="#section-3.1.2" class="section-number selfRef">3.1.2. </a><a href="#name-walker-delta" class="section-name selfRef">Walker Delta</a>
           </h4>
-<p id="section-3.1.2-1"><a href="#fig-walker-delta" class="auto internal xref">Figure 3</a> is an illustration of a Walker Delta constellation with only two orbits due to graphical constraints. The orbits of a Walker Delta constellation typically have an inclination ranging from 45 to 65 degrees with respect to the equator plane, though any inclination is geometrically valid. Combined with the altitude, the inclination directly limits the latitude coverage of a constellation, while Walker Star constellations have a complete latitude coverage.<a href="#section-3.1.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.1.2-1"><a href="#fig-walker-delta" class="auto internal xref">Figure 4</a> is an illustration of a Walker Delta constellation with only two orbits due to graphical constraints. The orbits of a Walker Delta constellation typically have an inclination ranging from 45 to 65 degrees with respect to the equator plane, though any inclination is geometrically valid. Combined with the altitude, the inclination directly limits the latitude coverage of a constellation, while Walker Star constellations have a complete latitude coverage.<a href="#section-3.1.2-1" class="pilcrow">¶</a></p>
 <p id="section-3.1.2-2">Given that the orbits are distributed around the entire equator plane, there is no seam effect as in the Walker Star pattern. Instead, each orbit progresses in the same direction and cross paths twice with every other orbit. In this case, satellites can establish links with neighbouring orbits in addition to links within the same orbit.<a href="#section-3.1.2-2" class="pilcrow">¶</a></p>
 <span id="name-a-walker-delta-constellatio"></span><div id="fig-walker-delta">
-<figure id="figure-3">
+<figure id="figure-4">
             <div class="alignCenter art-text artwork" id="section-3.1.2-3.1">
 <pre>
     /   , - ~ ~ ~ - ,   \
@@ -1379,13 +1432,13 @@ Over the south and north poles, all orbits are crossing paths before going over 
       \               /
 </pre>
 </div>
-<figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
+<figcaption><a href="#figure-4" class="selfRef">Figure 4</a>:
 <a href="#name-a-walker-delta-constellatio" class="selfRef">A Walker Delta constellation</a>
             </figcaption></figure>
 </div>
-<p id="section-3.1.2-4"><a href="#fig-walker-delta-topo" class="auto internal xref">Figure 4</a> illustrates a part of a possible network topology for Walker Delta constellations, with four orbital planes depicted vertically, each containing three satellites. Links are established in-plane and cross-plane, i.e., from one orbit to the other.<a href="#section-3.1.2-4" class="pilcrow">¶</a></p>
+<p id="section-3.1.2-4"><a href="#fig-walker-delta-topo" class="auto internal xref">Figure 5</a> illustrates a part of a possible network topology for Walker Delta constellations, with four orbital planes depicted vertically, each containing three satellites. Links are established in-plane and cross-plane, i.e., from one orbit to the other.<a href="#section-3.1.2-4" class="pilcrow">¶</a></p>
 <span id="name-a-walker-delta-constellation"></span><div id="fig-walker-delta-topo">
-<figure id="figure-4">
+<figure id="figure-5">
             <div class="alignCenter art-text artwork" id="section-3.1.2-5.1">
 <pre>
       :        :        :        :
@@ -1407,7 +1460,7 @@ Over the south and north poles, all orbits are crossing paths before going over 
       :        :        :        :
 </pre>
 </div>
-<figcaption><a href="#figure-4" class="selfRef">Figure 4</a>:
+<figcaption><a href="#figure-5" class="selfRef">Figure 5</a>:
 <a href="#name-a-walker-delta-constellation" class="selfRef">A Walker Delta constellation network topology</a>
             </figcaption></figure>
 </div>
@@ -1422,14 +1475,14 @@ Over the south and north poles, all orbits are crossing paths before going over 
       <h2 id="name-constellation-code">
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-constellation-code" class="section-name selfRef">Constellation code</a>
       </h2>
-<p id="section-4-1"><a href="#constellation-code-abnf-def" class="auto internal xref">Figure 5</a> defines the constellation code using an ABNF grammar <span>[<a href="#RFC5234" class="cite xref">RFC5234</a>]</span>. The code can define a constellation with multiple shells. Each shell can follow a Walker Star or Walker Delta pattern.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<p id="section-4-1"><a href="#constellation-code-abnf-def" class="auto internal xref">Figure 6</a> defines the constellation code using an ABNF grammar <span>[<a href="#RFC5234" class="cite xref">RFC5234</a>]</span>. The code can define a constellation with multiple shells. Each shell can follow a Walker Star or Walker Delta pattern.<a href="#section-4-1" class="pilcrow">¶</a></p>
 <span id="name-abnf-grammar-for-the-conste"></span><div id="constellation-code-abnf-def">
-<figure id="figure-5">
+<figure id="figure-6">
         <div class="alignCenter art-abnf art-text artwork" id="section-4-2.1">
 <pre>
 constellation = shell [ "+" constellation ]
 shell = walker ":" altitude ":" inclination ":" plane-params
-shell =/ [ ":" mean-anomaly ]
+        [ ":" mean-anomaly ]
 walker = "D" / "S"
 altitude = float
 inclination = float
@@ -1445,7 +1498,7 @@ DIGIT = %x30-39
 
 </pre>
 </div>
-<figcaption><a href="#figure-5" class="selfRef">Figure 5</a>:
+<figcaption><a href="#figure-6" class="selfRef">Figure 6</a>:
 <a href="#name-abnf-grammar-for-the-conste" class="selfRef">ABNF Grammar for the constellation code</a>
         </figcaption></figure>
 </div>
@@ -1520,120 +1573,284 @@ DIGIT = %x30-39
       <h2 id="name-describing-links-in-a-shell">
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-describing-links-in-a-shell" class="section-name selfRef">Describing links in a shell</a>
       </h2>
-<p id="section-6-1">In this section, we extend the code notation with a complementary YAML format to specify the patterns of links within a shell. Each YAML document following the format defined in this I-D specifies a constellation that may be composed of several shells. An example of such a document is as follows:<a href="#section-6-1" class="pilcrow">¶</a></p>
-<span id="name-example-of-yaml-document-sp"></span><div id="constellation-yaml-example">
-<figure id="figure-6">
-        <div class="alignCenter art-text art-yaml artwork" id="section-6-2.1">
+<p id="section-6-1">In this section, we extend the code notation with the following CDDL schema
+<span>[<a href="#RFC8610" class="cite xref">RFC8610</a>]</span> to specify the patterns of links within a shell.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<span id="name-cddl-schema-for-constellati"></span><div id="constellation-cddl-def">
+<figure id="figure-7">
+        <div class="alignLeft art-cddl art-text artwork" id="section-6-2.1">
 <pre>
-version: draft-piraux-space-constellation-code-01
-shells:
-- code: D:1200:55:400/20/19
-  link_patterns:
-  - rank_offset: 1   # Establish an in-plane link towards the next sat.
-  - plane_offset: 1  # Establish a cross-plane link in a staggered pattern
-    conditions:      # e.g. when only three links are possible.
-    - eq: [{mod: [rank, 2]}, {mod: [plane, 2]}] # rank % 2 == plane % 2
+constellation-specs = {
+  version: tstr,
+  shells: [+ shell-entry],
+}
 
-- code: S:1210:89:52/4/1
-  link_patterns:
-  - rank_offset: 1   # Establish an in-plane link towards the next sat.
+shell-entry = {
+  code: tstr,  ; Constellation code as specified in this document
+  link-patterns: [* link-pattern],
+}
+
+link-pattern = {
+  (
+    (rank-offset: int, ? plane-offset: int) //
+    (? rank-offset: int, plane-offset: int)
+  ),
+  ? conditions: [* condition],
+}
+
+condition = { eq: [expression, expression] }
+
+expression = int
+           / context-element
+           / operation
+
+context-element = "rank" / "plane"
+
+operation = { mod: [expression, expression] }
 </pre>
 </div>
-<figcaption><a href="#figure-6" class="selfRef">Figure 6</a>:
-<a href="#name-example-of-yaml-document-sp" class="selfRef">Example of YAML document specifying a two-shell constellation</a>
+<figcaption><a href="#figure-7" class="selfRef">Figure 7</a>:
+<a href="#name-cddl-schema-for-constellati" class="selfRef">CDDL schema for constellation links</a>
         </figcaption></figure>
 </div>
-<p id="section-6-3"><a href="#constellation-yaml-example" class="auto internal xref">Figure 6</a> specifies a two-shell constellation. The first shell is a Walker Delta shell in which satellites have three links towards neighbours. The second one is a Walker Star pattern with two in-plane links per satellite.<a href="#section-6-3" class="pilcrow">¶</a></p>
-<p id="section-6-4">These patterns are encoded through the <code>link_patterns</code> key. It contains a list of patterns with optional conditions. Each pattern can specify how to reach a neighbour given local plane and rank offsets to establish a bidirectional link. For instance, the first pattern of the first shell specifies that a link is formed with the next satellite in the same orbit.<a href="#section-6-4" class="pilcrow">¶</a></p>
-<p id="section-6-5">For each pattern, a list of conditions can be expressed with the <code>conditions</code> key. These are evaluated for each satellite within the shell to determine whether the corresponding pattern should be applied to form a link. By applying each patterns to all satellites, the set of links within the constellation shell is established.<a href="#section-6-5" class="pilcrow">¶</a></p>
+<p id="section-6-3">Each data item specifies a constellation that may be composed of several shells.
+An example specifying a two-shell constellation is given below in Extended
+Diagnostic Notation (EDN) <span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span>:<a href="#section-6-3" class="pilcrow">¶</a></p>
+<span id="name-example-constellation-specs"></span><div id="constellation-edn-example">
+<figure id="figure-8">
+        <div class="alignCenter art-edn art-text artwork" id="section-6-4.1">
+<pre>
+{
+  "version": "draft-piraux-space-constellation-code-03",
+  "shells": [
+    {
+      "code": "D:1200:55:400/20/19",
+      "link-patterns": [
+        { "rank-offset": 1 },             / in-plane link to the next satellite /
+        {
+          "plane-offset": 1,              / cross-plane link in a staggered pattern /
+          "conditions": [                 / e.g., when only three links are possible /
+            { "eq": [{ "mod": ["rank", 2] }, { "mod": ["plane", 2] }] }
+            / rank % 2 == plane % 2 /
+          ]
+        }
+      ]
+    },
+    {
+      "code": "S:1210:89:52/4/1",
+      "link-patterns": [
+        { "rank-offset": 1 }
+      ]
+    }
+  ]
+}
+</pre>
+</div>
+<figcaption><a href="#figure-8" class="selfRef">Figure 8</a>:
+<a href="#name-example-constellation-specs" class="selfRef">Example constellation-specs data item</a>
+        </figcaption></figure>
+</div>
+<p id="section-6-5"><a href="#constellation-edn-example" class="auto internal xref">Figure 8</a> specifies a two-shell constellation. The first shell is a Walker Delta shell in which satellites have three links towards neighbours. The second is a Walker Star pattern with two in-plane links per satellite.<a href="#section-6-5" class="pilcrow">¶</a></p>
+<p id="section-6-6">These patterns are encoded through the <code>link-patterns</code> key. It contains a list of patterns with optional conditions. Each pattern specifies how to reach a neighbour given local plane and rank offsets to establish a bidirectional link. For instance, the first pattern of the first shell specifies that a link is formed with the next satellite in the same orbit.<a href="#section-6-6" class="pilcrow">¶</a></p>
+<p id="section-6-7">For each pattern, a list of conditions can be expressed with the <code>conditions</code> key. These are evaluated for each satellite within the shell to determine whether the corresponding pattern should be applied to form a link. By applying each pattern to all satellites, the set of links within the constellation shell is established.<a href="#section-6-7" class="pilcrow">¶</a></p>
 <div id="detailed-specification">
 <section id="section-6.1">
         <h3 id="name-detailed-specification">
 <a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-detailed-specification" class="section-name selfRef">Detailed specification</a>
         </h3>
-<div id="top-level-keys">
-<section id="section-6.1.1">
-          <h4 id="name-top-level-keys">
-<a href="#section-6.1.1" class="section-number selfRef">6.1.1. </a><a href="#name-top-level-keys" class="section-name selfRef">Top-level keys</a>
-          </h4>
-<span class="break"></span><dl class="dlParallel" id="section-6.1.1-1">
-            <dt id="section-6.1.1-1.1"><code>version</code></dt>
-            <dd style="margin-left: 1.5em" id="section-6.1.1-1.2">
-              <p id="section-6.1.1-1.2.1">Indicates the version of this I-D that the YAML document should be interpreted with.<a href="#section-6.1.1-1.2.1" class="pilcrow">¶</a></p>
-</dd>
-            <dd class="break"></dd>
-<dt id="section-6.1.1-1.3"><code>shells</code></dt>
-            <dd style="margin-left: 1.5em" id="section-6.1.1-1.4">
-              <p id="section-6.1.1-1.4.1">A list of shells.<a href="#section-6.1.1-1.4.1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-6.1-1">
+          <dt id="section-6.1-1.1"><code>version</code></dt>
+          <dd style="margin-left: 1.5em" id="section-6.1-1.2">
+            <p id="section-6.1-1.2.1">Indicates the version of this I-D that the data item should be interpreted with.<a href="#section-6.1-1.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
+<dt id="section-6.1-1.3"><code>shells</code></dt>
+          <dd style="margin-left: 1.5em" id="section-6.1-1.4">
+            <p id="section-6.1-1.4.1">A list of shell entries.<a href="#section-6.1-1.4.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
 </dl>
-</section>
-</div>
-<div id="shell">
-<section id="section-6.1.2">
-          <h4 id="name-shell">
-<a href="#section-6.1.2" class="section-number selfRef">6.1.2. </a><a href="#name-shell" class="section-name selfRef">Shell</a>
+<div id="shell-entry">
+<section id="section-6.1.1">
+          <h4 id="name-shell-entry">
+<a href="#section-6.1.1" class="section-number selfRef">6.1.1. </a><a href="#name-shell-entry" class="section-name selfRef">Shell entry</a>
           </h4>
-<span class="break"></span><dl class="dlParallel" id="section-6.1.2-1">
-            <dt id="section-6.1.2-1.1"><code>code</code></dt>
-            <dd style="margin-left: 1.5em" id="section-6.1.2-1.2">
-              <p id="section-6.1.2-1.2.1">The shell code following the specification in <a href="#constellation-code" class="auto internal xref">Section 4</a>.<a href="#section-6.1.2-1.2.1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-6.1.1-1">
+            <dt id="section-6.1.1-1.1"><code>code</code></dt>
+            <dd style="margin-left: 1.5em" id="section-6.1.1-1.2">
+              <p id="section-6.1.1-1.2.1">The shell code following the specification in <a href="#constellation-code" class="auto internal xref">Section 4</a>.<a href="#section-6.1.1-1.2.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
-<dt id="section-6.1.2-1.3"><code>link_patterns</code></dt>
-            <dd style="margin-left: 1.5em" id="section-6.1.2-1.4">
-              <p id="section-6.1.2-1.4.1">A list of link patterns.<a href="#section-6.1.2-1.4.1" class="pilcrow">¶</a></p>
+<dt id="section-6.1.1-1.3"><code>link-patterns</code></dt>
+            <dd style="margin-left: 1.5em" id="section-6.1.1-1.4">
+              <p id="section-6.1.1-1.4.1">A list of link patterns applied to every satellite in the shell.<a href="#section-6.1.1-1.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 </dl>
 </section>
 </div>
 <div id="link-pattern">
-<section id="section-6.1.3">
+<section id="section-6.1.2">
           <h4 id="name-link-pattern">
-<a href="#section-6.1.3" class="section-number selfRef">6.1.3. </a><a href="#name-link-pattern" class="section-name selfRef">Link pattern</a>
+<a href="#section-6.1.2" class="section-number selfRef">6.1.2. </a><a href="#name-link-pattern" class="section-name selfRef">Link pattern</a>
           </h4>
-<span class="break"></span><dl class="dlParallel" id="section-6.1.3-1">
-            <dt id="section-6.1.3-1.1"><code>rank_offset</code></dt>
-            <dd style="margin-left: 1.5em" id="section-6.1.3-1.2">
-              <p id="section-6.1.3-1.2.1">An integer specifying the offset in rank to reach the neighbour for this link.<a href="#section-6.1.3-1.2.1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-6.1.2-1">
+            <dt id="section-6.1.2-1.1"><code>rank-offset</code></dt>
+            <dd style="margin-left: 1.5em" id="section-6.1.2-1.2">
+              <p id="section-6.1.2-1.2.1">An integer specifying the offset in rank to reach the neighbour for this link.<a href="#section-6.1.2-1.2.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
-<dt id="section-6.1.3-1.3"><code>plane_offset</code></dt>
-            <dd style="margin-left: 1.5em" id="section-6.1.3-1.4">
-              <p id="section-6.1.3-1.4.1">An integer specifying the offset in plane to reach the neighbour for this link. When this offset causes the plane index to wrap around to the first plane, the rank index of the target satellite is adjusted according to the phasing factor of the shell.<a href="#section-6.1.3-1.4.1" class="pilcrow">¶</a></p>
+<dt id="section-6.1.2-1.3"><code>plane-offset</code></dt>
+            <dd style="margin-left: 1.5em" id="section-6.1.2-1.4">
+              <p id="section-6.1.2-1.4.1">An integer specifying the offset in plane to reach the neighbour for this link. When this offset causes the plane index to wrap around to the first plane, the rank index of the target satellite is adjusted according to the phasing factor of the shell.<a href="#section-6.1.2-1.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 </dl>
-<p id="section-6.1.3-2">Both types of offset can be included for a single pattern. When one is absent, it is considered to be equal to zero.
-In addition, they naturally wrap around at the boundaries of a shell.<a href="#section-6.1.3-2" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-6.1.3-3">
-            <dt id="section-6.1.3-3.1"><code>conditions</code></dt>
-            <dd style="margin-left: 1.5em" id="section-6.1.3-3.2">
-              <p id="section-6.1.3-3.2.1">A list of conditions that must be met for this link to be added.<a href="#section-6.1.3-3.2.1" class="pilcrow">¶</a></p>
+<p id="section-6.1.2-2">At least one of the two offsets <span class="bcp14">MUST</span> be present and non-zero.
+The other defaults to zero when absent.
+They naturally wrap around at the boundaries of a shell.<a href="#section-6.1.2-2" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-6.1.2-3">
+            <dt id="section-6.1.2-3.1"><code>conditions</code></dt>
+            <dd style="margin-left: 1.5em" id="section-6.1.2-3.2">
+              <p id="section-6.1.2-3.2.1">A list of conditions that must all be met for the corresponding link to be added to a given satellite.<a href="#section-6.1.2-3.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 </dl>
 </section>
 </div>
 <div id="condition">
-<section id="section-6.1.4">
+<section id="section-6.1.3">
           <h4 id="name-condition">
-<a href="#section-6.1.4" class="section-number selfRef">6.1.4. </a><a href="#name-condition" class="section-name selfRef">Condition</a>
+<a href="#section-6.1.3" class="section-number selfRef">6.1.3. </a><a href="#name-condition" class="section-name selfRef">Condition</a>
           </h4>
-<p id="section-6.1.4-1">Each condition is a predicate on two expressions encoded as mapping. The predicate is the key while the two expressions form a sequence as the value. This version of the document only specifies the equality predicate indicated by the <code>eq</code> key.<a href="#section-6.1.4-1" class="pilcrow">¶</a></p>
+<p id="section-6.1.3-1">A condition is a predicate applied to two expressions. This version of the document only specifies the equality predicate, indicated by the <code>eq</code> key.<a href="#section-6.1.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="expression">
-<section id="section-6.1.5">
+<section id="section-6.1.4">
           <h4 id="name-expression">
-<a href="#section-6.1.5" class="section-number selfRef">6.1.5. </a><a href="#name-expression" class="section-name selfRef">Expression</a>
+<a href="#section-6.1.4" class="section-number selfRef">6.1.4. </a><a href="#name-expression" class="section-name selfRef">Expression</a>
           </h4>
-<p id="section-6.1.5-1">It can be an integer, a context element or an operation on two expressions.
-Context elements are strings and include <code>rank</code> for the current rank index and <code>plane</code> for the current plane index of the satellite considered when evaluating a given link pattern.<a href="#section-6.1.5-1" class="pilcrow">¶</a></p>
-<p id="section-6.1.5-2">An operation is encoded as mapping, with the key defining the type of operation and the value containing a sequence with the two expressions.
-This version of the document only specifies the modulo operation indicated by the <code>mod</code> key.<a href="#section-6.1.5-2" class="pilcrow">¶</a></p>
+<p id="section-6.1.4-1">An expression is one of: an integer literal, a context element, or an operation
+on two sub-expressions.
+Context elements are represented by strings and two of them are defined.
+<code>rank</code> refers to the current rank index and <code>plane</code> refers to the current plane index of the satellite being evaluated.
+This version of the document only specifies the modulo
+operation, indicated by the <code>mod</code> key.<a href="#section-6.1.4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+</section>
+</div>
+<div id="ground-stations">
+<section id="section-7">
+      <h2 id="name-describing-ground-stations">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-describing-ground-stations" class="section-name selfRef">Describing ground stations</a>
+      </h2>
+<p id="section-7-1">In this section, we describe ground stations using the following CDDL schema
+<span>[<a href="#RFC8610" class="cite xref">RFC8610</a>]</span>.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<span id="name-cddl-schema-for-ground-stat"></span><div id="ground-stations-cddl-def">
+<figure id="figure-9">
+        <div class="alignLeft art-cddl art-text artwork" id="section-7-2.1">
+<pre>
+ground-stations-specs = {
+  version: tstr,
+  ground-stations: [+ ground-station],
+}
+
+ground-station = {
+  name: tstr,
+  latitude: float,      ; degrees
+  longitude: float,     ; degrees
+  altitude: float,      ; metres above Earth surface
+  min-elevation: float, ; degrees
+  antennas: uint,
+}
+</pre>
+</div>
+<figcaption><a href="#figure-9" class="selfRef">Figure 9</a>:
+<a href="#name-cddl-schema-for-ground-stat" class="selfRef">CDDL schema for ground stations</a>
+        </figcaption></figure>
+</div>
+<p id="section-7-3">An example specifying a single ground station is as follows:<a href="#section-7-3" class="pilcrow">¶</a></p>
+<span id="name-example-ground-stations-spe"></span><div id="ground-stations-json-example">
+<figure id="figure-10">
+        <div class="alignLeft art-json art-text artwork" id="section-7-4.1">
+<pre>
+{
+  "version": "draft-piraux-space-constellation-code-02",
+  "ground-stations": [
+    {
+      "name": "Charleroi",
+      "latitude": 50.40,
+      "longitude": 4.25,
+      "altitude": 109.0,
+      "min-elevation": 10.0,
+      "antennas": 8
+    }
+  ]
+}
+</pre>
+</div>
+<figcaption><a href="#figure-10" class="selfRef">Figure 10</a>:
+<a href="#name-example-ground-stations-spe" class="selfRef">Example ground-stations-specs data item</a>
+        </figcaption></figure>
+</div>
+<p id="section-7-5"><a href="#ground-stations-json-example" class="auto internal xref">Figure 10</a> specifies a single ground station with an associated location. It has a MEA of 10 degrees and 8 antennas that can be used simultaneously.<a href="#section-7-5" class="pilcrow">¶</a></p>
+<div id="detailed-specification-1">
+<section id="section-7.1">
+        <h3 id="name-detailed-specification-2">
+<a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-detailed-specification-2" class="section-name selfRef">Detailed specification</a>
+        </h3>
+<span class="break"></span><dl class="dlParallel" id="section-7.1-1">
+          <dt id="section-7.1-1.1"><code>version</code></dt>
+          <dd style="margin-left: 1.5em" id="section-7.1-1.2">
+            <p id="section-7.1-1.2.1">Indicates the version of this I-D that the data item should be interpreted with.<a href="#section-7.1-1.2.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-7.1-1.3"><code>ground-stations</code></dt>
+          <dd style="margin-left: 1.5em" id="section-7.1-1.4">
+            <p id="section-7.1-1.4.1">A list of ground stations.<a href="#section-7.1-1.4.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+<div id="ground-station">
+<section id="section-7.1.1">
+          <h4 id="name-ground-station">
+<a href="#section-7.1.1" class="section-number selfRef">7.1.1. </a><a href="#name-ground-station" class="section-name selfRef">Ground station</a>
+          </h4>
+<span class="break"></span><dl class="dlParallel" id="section-7.1.1-1">
+            <dt id="section-7.1.1-1.1"><code>name</code></dt>
+            <dd style="margin-left: 1.5em" id="section-7.1.1-1.2">
+              <p id="section-7.1.1-1.2.1">A string to identify the ground station.<a href="#section-7.1.1-1.2.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-7.1.1-1.3"><code>latitude</code></dt>
+            <dd style="margin-left: 1.5em" id="section-7.1.1-1.4">
+              <p id="section-7.1.1-1.4.1">The latitude of the ground station location, expressed in degrees.<a href="#section-7.1.1-1.4.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-7.1.1-1.5"><code>longitude</code></dt>
+            <dd style="margin-left: 1.5em" id="section-7.1.1-1.6">
+              <p id="section-7.1.1-1.6.1">The longitude of the ground station location, expressed in degrees.<a href="#section-7.1.1-1.6.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-7.1.1-1.7"><code>altitude</code></dt>
+            <dd style="margin-left: 1.5em" id="section-7.1.1-1.8">
+              <p id="section-7.1.1-1.8.1">The altitude of the ground station location, expressed in metres above the Earth's surface.<a href="#section-7.1.1-1.8.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-7.1.1-1.9"><code>min-elevation</code></dt>
+            <dd style="margin-left: 1.5em" id="section-7.1.1-1.10">
+              <p id="section-7.1.1-1.10.1">The Minimum Elevation Angle above which Feeder Links can be established, expressed in degrees.<a href="#section-7.1.1-1.10.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-7.1.1-1.11"><code>antennas</code></dt>
+            <dd style="margin-left: 1.5em" id="section-7.1.1-1.12">
+              <p id="section-7.1.1-1.12.1">The number of antennas available to establish Feeder Links simultaneously.<a href="#section-7.1.1-1.12.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+</dl>
 </section>
 </div>
 </section>
@@ -1641,38 +1858,38 @@ This version of the document only specifies the modulo operation indicated by th
 </section>
 </div>
 <div id="considerations">
-<section id="section-7">
+<section id="section-8">
       <h2 id="name-considerations-for-future-v">
-<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-considerations-for-future-v" class="section-name selfRef">Considerations for future versions of this document</a>
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-considerations-for-future-v" class="section-name selfRef">Considerations for future versions of this document</a>
       </h2>
-<p id="section-7-1">The code presented in this document does not consider the capabilities of satellites within a constellation to establish links. It focuses on defining the stable network topology that is expected for a constellation. Future versions of this document could consider means to define the capabilities of Optical Communication Terminals (OCTs) used to establish ISLs. This is complementary to the description of the network topology, which forms more of an intent, while capabilities define the space of possible links.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-8-1">The code presented in this document does not consider the capabilities of satellites within a constellation to establish links. It focuses on defining the stable network topology that is expected for a constellation. Future versions of this document could consider means to define the capabilities of Optical Communication Terminals (OCTs) used to establish ISLs. This is complementary to the description of the network topology, which forms more of an intent, while capabilities define the space of possible links.<a href="#section-8-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="security-considerations">
-<section id="section-8">
+<section id="section-9">
       <h2 id="name-security-considerations">
-<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-8-1">As the code specified in this document is foreseen as a user input into software that performs simulations, evaluations and analysis of satellite constellations, implementers <span class="bcp14">SHOULD</span> consider validation and sanitisation measures.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-9-1">As the code specified in this document is foreseen as a user input into software that performs simulations, evaluations and analysis of satellite constellations, implementers <span class="bcp14">SHOULD</span> consider validation and sanitisation measures.<a href="#section-9-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-considerations">
-<section id="section-9">
+<section id="section-10">
       <h2 id="name-iana-considerations">
-<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-9-1">This document has no IANA actions.<a href="#section-9-1" class="pilcrow">¶</a></p>
+<p id="section-10-1">This document has no IANA actions.<a href="#section-10-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-combined-references">
-<section id="section-10">
+<section id="section-11">
       <h2 id="name-references">
-<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-references" class="section-name selfRef">References</a>
+<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
 <div id="sec-normative-references">
-<section id="section-10.1">
+<section id="section-11.1">
         <h3 id="name-normative-references">
-<a href="#section-10.1" class="section-number selfRef">10.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+<a href="#section-11.1" class="section-number selfRef">11.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
 <dt id="RFC2119">[RFC2119]</dt>
@@ -1684,29 +1901,45 @@ This version of the document only specifies the modulo operation indicated by th
 <span class="refAuthor">Crocker, D., Ed.</span> and <span class="refAuthor">P. Overell</span>, <span class="refTitle">"Augmented BNF for Syntax Specifications: ABNF"</span>, <span class="seriesInfo">STD 68</span>, <span class="seriesInfo">RFC 5234</span>, <span class="seriesInfo">DOI 10.17487/RFC5234</span>, <time datetime="2008-01" class="refDate">January 2008</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5234">https://www.rfc-editor.org/rfc/rfc5234</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8174">[RFC8174]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8610">[RFC8610]</dt>
+      <dd>
+<span class="refAuthor">Birkholz, H.</span>, <span class="refAuthor">Vigano, C.</span>, and <span class="refAuthor">C. Bormann</span>, <span class="refTitle">"Concise Data Definition Language (CDDL): A Notational Convention to Express Concise Binary Object Representation (CBOR) and JSON Data Structures"</span>, <span class="seriesInfo">RFC 8610</span>, <span class="seriesInfo">DOI 10.17487/RFC8610</span>, <time datetime="2019-06" class="refDate">June 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8610">https://www.rfc-editor.org/rfc/rfc8610</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
 </div>
 <div id="sec-informative-references">
-<section id="section-10.2">
+<section id="section-11.2">
         <h3 id="name-informative-references">
-<a href="#section-10.2" class="section-number selfRef">10.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+<a href="#section-11.2" class="section-number selfRef">11.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
 <dt id="BhSi2019">[BhSi2019]</dt>
         <dd>
 <span class="refAuthor">Bhattacherjee, D.</span> and <span class="refAuthor">A. Singla</span>, <span class="refTitle">"Network topology design at 27,000 km/hour"</span>, <span class="refContent">ACM</span>, <span class="seriesInfo">Proceedings of the 15th International Conference on Emerging Networking Experiments And Technologies pp. 341-354</span>, <span class="seriesInfo">DOI 10.1145/3359989.3365407</span>, <time datetime="2019-12" class="refDate">December 2019</time>, <span>&lt;<a href="https://doi.org/10.1145/3359989.3365407">https://doi.org/10.1145/3359989.3365407</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="HoRo1980">[HoRo1980]</dt>
+        <dd>
+<span class="refAuthor">Hoots, F. R.</span> and <span class="refAuthor">R. L. Roehrich</span>, <span class="refTitle">"Spacetrack Report No. 3: Models for Propagation of NORAD Element Sets"</span>, <time datetime="1980-12" class="refDate">December 1980</time>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8949">[RFC8949]</dt>
+        <dd>
+<span class="refAuthor">Bormann, C.</span> and <span class="refAuthor">P. Hoffman</span>, <span class="refTitle">"Concise Binary Object Representation (CBOR)"</span>, <span class="seriesInfo">STD 94</span>, <span class="seriesInfo">RFC 8949</span>, <span class="seriesInfo">DOI 10.17487/RFC8949</span>, <time datetime="2020-12" class="refDate">December 2020</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8949">https://www.rfc-editor.org/rfc/rfc8949</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="StFrHe2022">[StFrHe2022]</dt>
         <dd>
 <span class="refAuthor">Stock, G.</span>, <span class="refAuthor">Fraire, J.</span>, and <span class="refAuthor">H. Hermanns</span>, <span class="refTitle">"Distributed On-Demand Routing for LEO Mega-Constellations: A Starlink Case Study"</span>, <span class="refContent">IEEE</span>, <span class="seriesInfo">2022 11th Advanced Satellite Multimedia Systems Conference and the 17th Signal Processing for Space Communications Workshop (ASMS/SPSC) pp. 1-8</span>, <span class="seriesInfo">DOI 10.1109/asms/spsc55670.2022.9914716</span>, <time datetime="2022-09" class="refDate">September 2022</time>, <span>&lt;<a href="https://doi.org/10.1109/asms/spsc55670.2022.9914716">https://doi.org/10.1109/asms/spsc55670.2022.9914716</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="TvdLCode">[TvdLCode]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Tim van der Lee</span>, <span class="refTitle">"Constellation Code"</span>, <time datetime="2023-07" class="refDate">July 2023</time>, <span>&lt;<a href="https://github.com/Tim024/ConstellationCode">https://github.com/Tim024/ConstellationCode</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="VaCrHuKe2006">[VaCrHuKe2006]</dt>
+      <dd>
+<span class="refAuthor">Vallado, D.</span>, <span class="refAuthor">Crawford, P.</span>, <span class="refAuthor">Hujsak, R.</span>, and <span class="refAuthor">T. Kelso</span>, <span class="refTitle">"Revisiting Spacetrack Report #3"</span>, <span class="refContent">American Institute of Aeronautics and Astronautics</span>, <span class="seriesInfo">AIAA/AAS Astrodynamics Specialist Conference and Exhibit</span>, <span class="seriesInfo">DOI 10.2514/6.2006-6753</span>, <time datetime="2006-06" class="refDate">June 2006</time>, <span>&lt;<a href="https://doi.org/10.2514/6.2006-6753">https://doi.org/10.2514/6.2006-6753</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
