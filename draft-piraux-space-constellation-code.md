@@ -56,8 +56,8 @@ informative:
 
 --- abstract
 
-When considering a satellite constellation forming a non-terrestrial network, the characteristics of this constellation heavily influences the network topology it forms.
-To improve the analysis of such non-terrestrial networks across various tools developed by the network community, this document proposes a notation to describe common constellation patterns.
+When considering a satellite constellation forming a non-terrestrial network, the characteristics of this constellation heavily influence the network topology it forms.
+To improve the analysis of such non-terrestrial networks across various tools developed by the network community, this document defines a constellation code to describe common orbital shell patterns, and specification formats to describe inter-satellite link topologies and ground stations, covering the Core and Ground Networks of a constellation.
 In addition, this document may serve as an introduction to satellite constellations for IETF participants.
 
 --- middle
@@ -82,7 +82,7 @@ In the case of Internet broadband access, this can be a Point-of-Presence (PoP) 
 ~~~~
 {: #fig-satellite-constellation-networks artwork-align="center" title="A satellite constellation spans three networks"}
 
-The network topology of the Core Network of a satellite constellation is heavily influenced by its orbital characteristics. With recent technologies enabling Optical Inter-Satellite Links (OISL) between satellites, a network is formed in space by establishing links between neighbour satellites. The resulting topology can be dynamic as the distance between neighbour satellites changes throughout their orbital period.
+The network topology of the Core Network of a satellite constellation is heavily influenced by its orbital characteristics. A network is formed in space by establishing Inter-Satellite Links (ISL) between neighbour satellites, notably enabled by recent technologies such as Optical ISLs (OISL). The resulting topology can be dynamic as the distance between neighbour satellites changes throughout their orbital period.
 
 A key characteristic of satellite constellations is the ephemeral nature of the Feeder Links.
 They may only be established when a satellite and a ground station are in range of each other.
@@ -108,15 +108,21 @@ This version of the specification applies only to circular orbital shells. The r
 The notation defined in this document can also specify patterns for links within a shell of a constellation. Each pattern is repeated to establish the connectivity of a satellite with its neighbours within the shell. This is inspired by the works of network researchers on constellation network topology design {{BhSi2019}}.
 
 The rest of this document is organised as follows.
-{{satellite-constellations}} introduces two variants of the Walker pattern for orbital shells. These are used to define many of the existing satellite constellations. {{constellation-code}} defines the constellation code syntax using an ABNF grammar [RFC5234] and the code semantics. {{examples-of-constellation-codes}} contains examples of existing constellations defined using the constellation code. {{links}} augments the constellation code with a pattern notation to describe links within a shell.
-{{ground-stations}} defines how ground stations can be described.
+{{core-network}} describes the Core Network of a constellation.
+{{satellite-constellations}} introduces two variants of the Walker pattern for orbital shells, used to define many of the existing satellite constellations. {{constellation-code}} defines the constellation code syntax using an ABNF grammar [RFC5234] and its semantics. {{examples-of-constellation-codes}} contains examples of existing constellations defined using the constellation code. {{links}} extends the code with a specification format for link patterns within a shell.
+{{ground-network}} describes the Ground Network of a constellation.
+{{ground-stations}} defines a specification format for ground stations.
 Finally, {{considerations}} concludes with considerations for future versions of this document.
 
 # Conventions and Definitions
 
 {::boilerplate bcp14-tagged}
 
-# Satellite constellations
+# Describing the Core Network {#core-network}
+
+This section describes how the Core Network of a constellation is specified.
+
+## Satellite constellations
 
 A constellation greatly improves the availability of a satellite service up to global or near-global coverage on Earth.
 From the user perspective, a constellation offers more guarantees that a satellite can be reached at all times.
@@ -127,14 +133,14 @@ When all orbital planes of a constellation are circular orbits sharing the same 
 
 The rest of this section describes two common shells based on the Walker pattern.
 
-## Walker constellations
+### Walker constellations
 
 A Walker constellation consists of circular orbits sharing the same inclination. Two variants of the Walker pattern exist:
 
 - Walker Star, where orbits are distributed over 180 degrees around the equator.
 - Walker Delta, where orbits are distributed over 360 degrees around the equator.
 
-### Walker Star
+#### Walker Star
 
 {{fig-walker-star}} is an illustration of a Walker Star constellation considering the Earth equator as horizontal in the Figure. The orbit trajectories are depicted by a dashed line, while satellites and their travel direction are indicated by arrow heads.
 
@@ -183,7 +189,7 @@ In a Walker Star constellation, a seam can be observed at the start and end of t
 ~~~~
 {: #fig-walker-star-topo artwork-align="center" title="A Walker Star constellation network topology"}
 
-### Walker Delta
+#### Walker Delta
 
 {{fig-walker-delta}} is an illustration of a Walker Delta constellation with only two orbits due to graphical constraints. The orbits of a Walker Delta constellation typically have an inclination ranging from 45 to 65 degrees with respect to the equator plane, though any inclination is geometrically valid. Combined with the altitude, the inclination directly limits the latitude coverage of a constellation, while Walker Star constellations have a complete latitude coverage.
 
@@ -228,7 +234,7 @@ Given that the orbits are distributed around the entire equator plane, there is 
 ~~~~
 {: #fig-walker-delta-topo artwork-align="center" title="A Walker Delta constellation network topology"}
 
-# Constellation code
+## Constellation code
 
 {{constellation-code-abnf-def}} defines the constellation code using an ABNF grammar [RFC5234]. The code can define a constellation with multiple shells. Each shell can follow a Walker Star or Walker Delta pattern.
 
@@ -247,8 +253,6 @@ mean-anomaly = float
 
 int = 1*DIGIT
 float = 1*DIGIT [ "." 1*DIGIT ]
-DIGIT = %x30-39
-
 ~~~
 {: #constellation-code-abnf-def artwork-align="center" artwork-name="syntax" title="ABNF Grammar for the constellation code"}
 [comment]: Compiled by https://author-tools.ietf.org/abnf
@@ -261,7 +265,7 @@ In addition to the grammar presented above defining the syntax of the code, a nu
 - The phasing factor must be within the range \[0, no-planes - 1\]. It represents the relative offset between satellites in adjacent orbital planes. It determines how satellites in one plane are shifted in their orbital position compared to the satellites in the neighbouring plane, enabling optimal coverage patterns.
 - The mean anomaly is expressed in degrees and MUST be within the range of \[0, 360\] degrees. It is optional and represents the orbital position of the first satellite in the first plane of the constellation. When absent it is considered equal to zero. The reference epoch for the mean anomaly is defined by the user's simulation environment or application context.
 
-# Examples of constellation codes
+## Examples of constellation codes
 
 This section provides some examples of how the constellation code can be used to define existing satellite constellations sourced from public information. In some cases, when the phasing factor is not known, it is speculative.
 
@@ -273,9 +277,9 @@ This section provides some examples of how the constellation code can be used to
  | GPS | Walker Delta, 20 180 km, 55° inclination, 24 satellites, 6 planes | D:20180:55:24/6/1 |
 {: #example-table title="Examples of constellation codes"}
 
-# Describing links in a shell {#links}
+## Link specification {#links}
 
-In this section, we extend the code notation with the following CDDL schema
+In this section, we extend the code notation with the following Concise Data Definition Language (CDDL) schema
 {{RFC8610}} to specify the patterns of links within a shell.
 
 ~~~ cddl
@@ -315,7 +319,7 @@ Diagnostic Notation (EDN) {{RFC8949}}:
 
 ~~~ edn
 {
-  "version": "draft-piraux-space-constellation-code-03",
+  "version": "draft-piraux-space-constellation-code-02",
   "shells": [
     {
       "code": "D:1200:55:400/20/19",
@@ -347,7 +351,7 @@ These patterns are encoded through the `link-patterns` key. It contains a list o
 
 For each pattern, a list of conditions can be expressed with the `conditions` key. These are evaluated for each satellite within the shell to determine whether the corresponding pattern should be applied to form a link. By applying each pattern to all satellites, the set of links within the constellation shell is established.
 
-## Detailed specification
+### `constellation-specs` fields
 
 `version`
 
@@ -357,7 +361,7 @@ For each pattern, a list of conditions can be expressed with the `conditions` ke
 
 : A list of shell entries.
 
-### Shell entry
+#### Shell entry
 
 `code`
 
@@ -367,7 +371,7 @@ For each pattern, a list of conditions can be expressed with the `conditions` ke
 
 : A list of link patterns applied to every satellite in the shell.
 
-### Link pattern
+#### Link pattern
 
 `rank-offset`
 
@@ -385,11 +389,11 @@ They naturally wrap around at the boundaries of a shell.
 
 : A list of conditions that must all be met for the corresponding link to be added to a given satellite.
 
-### Condition
+#### Condition
 
 A condition is a predicate applied to two expressions. This version of the document only specifies the equality predicate, indicated by the `eq` key.
 
-### Expression
+#### Expression
 
 An expression is one of: an integer literal, a context element, or an operation
 on two sub-expressions.
@@ -398,7 +402,11 @@ Context elements are represented by strings and two of them are defined.
 This version of the document only specifies the modulo
 operation, indicated by the `mod` key.
 
-# Describing ground stations {#ground-stations}
+# Describing the Ground Network {#ground-network}
+
+This section describes how the Ground Network of a constellation is specified.
+
+## Ground station specification {#ground-stations}
 
 In this section, we describe ground stations using the following CDDL schema
 {{RFC8610}}.
@@ -428,8 +436,8 @@ An example specifying a single ground station is as follows:
   "ground-stations": [
     {
       "name": "Charleroi",
-      "latitude": 50.40,
-      "longitude": 4.25,
+      "latitude": 50.403,
+      "longitude": 4.428,
       "altitude": 109.0,
       "min-elevation": 10.0,
       "antennas": 8
@@ -441,7 +449,7 @@ An example specifying a single ground station is as follows:
 
 {{ground-stations-json-example}} specifies a single ground station with an associated location. It has a MEA of 10 degrees and 8 antennas that can be used simultaneously.
 
-## Detailed specification
+### `ground-stations-specs` fields
 
 `version`
 
@@ -451,7 +459,7 @@ An example specifying a single ground station is as follows:
 
 : A list of ground stations.
 
-### Ground station
+#### Ground station
 
 `name`
 
@@ -479,12 +487,14 @@ An example specifying a single ground station is as follows:
 
 # Considerations for future versions of this document {#considerations}
 
-The code presented in this document does not consider the capabilities of satellites within a constellation to establish links. It focuses on defining the stable network topology that is expected for a constellation. Future versions of this document could consider means to define the capabilities of Optical Communication Terminals (OCTs) used to establish ISLs. This is complementary to the description of the network topology, which forms more of an intent, while capabilities define the space of possible links.
+The code and specification formats presented in this document do not consider the capabilities of satellites within a constellation to establish links. It focuses on defining the stable network topology that is expected for a constellation. Future versions of this document could consider means to define the capabilities of Optical Communication Terminals (OCTs) used to establish ISLs. This is complementary to the description of the network topology, which forms more of an intent, while capabilities define the space of possible links.
 
 # Security Considerations
 
-As the code specified in this document is foreseen as a user input into software that performs simulations, evaluations and analysis of satellite constellations, implementers SHOULD consider validation and sanitisation measures.
+As the code and specification formats specified in this document are foreseen as user input into software that performs simulations, evaluations and analysis of satellite constellations, implementers SHOULD consider validation and sanitisation measures.
 
+In particular, the `expression` and `operation` types ({{links}}) are recursively defined and could be nested arbitrarily deeply, and the `shells`, `link-patterns`, `conditions`, and `ground-stations` lists are unbounded in size.
+Implementers SHOULD bound recursion depth and collection sizes to mitigate resources exhaustion when processing untrusted input.
 
 # IANA Considerations
 
@@ -493,6 +503,12 @@ This document has no IANA actions.
 --- back
 
 # Changelog
+
+## Since draft-piraux-space-constellation-code-01
+
+* Replaced YAML by CDDL.
+* Include description of ground stations.
+* Reorganised the document into Core Network and Ground Network sections following the revised introduction.
 
 ## Since draft-piraux-space-constellation-code-00
 
