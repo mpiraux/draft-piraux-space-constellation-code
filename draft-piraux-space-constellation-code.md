@@ -31,8 +31,10 @@ author:
 
 normative:
   RFC5234:
+  RFC8610:
 
 informative:
+  RFC8949:
   TvdLCode:
     author:
       - ins: Tim van der Lee
@@ -41,6 +43,15 @@ informative:
     target: https://github.com/Tim024/ConstellationCode
   BhSi2019: DOI.10.1145/3359989.3365407
   StFrHe2022: DOI.10.1109/ASMS/SPSC55670.2022.9914716
+  VaCrHuKe2006: DOI.10.2514/6.2006-6753
+  HoRo1980:
+    title: "Spacetrack Report No. 3: Models for Propagation of NORAD Element Sets"
+    author:
+      - ins: F. R. Hoots
+        name: Felix R. Hoots
+      - ins: R. L. Roehrich
+        name: Ronald L. Roehrich
+    date: December 1980
 ...
 
 --- abstract
@@ -53,18 +64,53 @@ In addition, this document may serve as an introduction to satellite constellati
 
 # Introduction
 
-The network topology of a satellite constellation is heavily influenced by its orbital characteristics. With recent technologies enabling Optical Inter-Satellite Links (OISL) between satellites, a network is formed by establishing links between neighbour satellites. The resulting topology can be dynamic as the distance between neighbour satellites changes throughout their orbital period. A common notation for the network community could improve the reproducibility of evaluations, measurements and simulations of satellite constellation networks.
+A satellite constellation spans three networks to deliver their services as illustrated by {{fig-satellite-constellation-networks}}.
+First, an Access Network enables User Equipment (UE) to connect to the constellation.
+This is realised by the establishment of a Service Link to exchange UE traffic.
+Then, the UE traffic is forwarded over a Core Network consisting of the different interconnected satellites.
+Finally, the UE traffic is sent back to ground via the Feeder Link, which connects a satellite to a ground station.
+A ground station is usually colocated with the infrastructure required to deliver the service.
+In the case of Internet broadband access, this can be a Point-of-Presence (PoP) connecting to the Internet.
 
-The true position of a satellite is often represented using a Two-Line Element set (TLE). A TLE contains a number of fields describing the orbital elements at a given time of a given satellite. Combined with a simplified perturbation model, the TLE can be used to predict the future position and velocity of the satellite relatively accurately. However, when studying satellite constellations, TLEs may not be appropriate. First, they assume each satellite has a known absolute position, which is derived from the launch time and parameters which may not be known at the time of study. Second, they involve complex calculations given the chosen perturbation model which may not scale well to large-scale experiments. Third, TLEs are not sufficient to determine how the links are established within the constellation as they do not indicate its characteristics but only the position of its satellites.
+~~~~
+ Access Network |         Core Network         |    Ground Network
+                |                              |
+  UE ------- Service ---> *---*---*---* ---- Feeder --> Ground --- PoP
+              Link        :   :   :   :       Link      Station
+                |         *---*---*---*        |
+                |                              |
+~~~~
+{: #fig-satellite-constellation-networks artwork-align="center" title="A satellite constellation spans three networks"}
 
-The approach of this document is based on the mission parameters of a satellite constellation. Based on these parameters, the expected position of each satellite within the constellation can then be computed. While this approach does not capture the small discrepancies that can occur during the launch and operation of the satellites, we argue that it is sufficient in our context.
+The network topology of the Core Network of a satellite constellation is heavily influenced by its orbital characteristics. With recent technologies enabling Optical Inter-Satellite Links (OISL) between satellites, a network is formed in space by establishing links between neighbour satellites. The resulting topology can be dynamic as the distance between neighbour satellites changes throughout their orbital period.
+
+A key characteristic of satellite constellations is the ephemeral nature of the Feeder Links.
+They may only be established when a satellite and a ground station are in range of each other.
+Typically, ground stations can establish links within a defined cone of coverage.
+This cone is often characterised by a Minimum Elevation Angle (MEA), such that Feeder Links can only be established when their elevation is above the MEA.
+Consequently, satellites are often engineered such that Feeder Links are feasible within the entire cone of coverage of ground stations.
+A ground station often includes several antennas such that a certain number of Feeder Links can be established from a given location.
+Satellites may include several antennas as well to establish several Feeder Links or enable make-before-break transitions.
+
+A common notation for the network community to describe these constellations could improve the reproducibility of evaluations, measurements and simulations of satellite constellation networks.
+This document focuses on describing some elements of the Core and Ground Networks.
+
+The approach of this document is based on the mission parameters of a satellite constellation. Based on these parameters, the expected position of each satellite within the constellation can then be computed.
+Tools using the notation described in this document are free to choose how they propagate the positions of satellites.
+This may be revised in later versions of this document.
+The two practical options are:
+
+- Keplerian-based propagation, focusing on the theoretical position of satellites.
+- Perturbation-based propagation, such as using Simplified General Perturbations 4 (SGP4) or Simplified Deep Space Perturbations 4 (SDP4) {{HoRo1980}} {{VaCrHuKe2006}}.
 
 This version of the specification applies only to circular orbital shells. The rationale for this restriction is that circular orbits are the most common in current satellite constellations and simplify the code syntax. Elliptical orbits, such as those used in Molniya or Flower constellations, are outside the current scope but could be supported in a future extension of this document.
 
 The notation defined in this document can also specify patterns for links within a shell of a constellation. Each pattern is repeated to establish the connectivity of a satellite with its neighbours within the shell. This is inspired by the works of network researchers on constellation network topology design {{BhSi2019}}.
 
 The rest of this document is organised as follows.
-{{satellite-constellations}} introduces two variants of the Walker pattern for orbital shells. These are used to define many of the existing satellite constellations. {{constellation-code}} defines the constellation code syntax using an ABNF grammar [RFC5234] and the code semantics. {{examples-of-constellation-codes}} contains examples of existing constellations defined using the constellation code. {{links}} augments the constellation code with a pattern notation to describe links within a shell. Finally, {{considerations}} concludes with considerations for future versions of this document.
+{{satellite-constellations}} introduces two variants of the Walker pattern for orbital shells. These are used to define many of the existing satellite constellations. {{constellation-code}} defines the constellation code syntax using an ABNF grammar [RFC5234] and the code semantics. {{examples-of-constellation-codes}} contains examples of existing constellations defined using the constellation code. {{links}} augments the constellation code with a pattern notation to describe links within a shell.
+{{ground-stations}} defines how ground stations can be described.
+Finally, {{considerations}} concludes with considerations for future versions of this document.
 
 # Conventions and Definitions
 
@@ -229,80 +275,207 @@ This section provides some examples of how the constellation code can be used to
 
 # Describing links in a shell {#links}
 
-In this section, we extend the code notation with a complementary YAML format to specify the patterns of links within a shell. Each YAML document following the format defined in this I-D specifies a constellation that may be composed of several shells. An example of such a document is as follows:
+In this section, we extend the code notation with the following CDDL schema
+{{RFC8610}} to specify the patterns of links within a shell.
 
-~~~ yaml
-version: draft-piraux-space-constellation-code-01
-shells:
-- code: D:1200:55:400/20/19
-  link_patterns:
-  - rank_offset: 1   # Establish an in-plane link towards the next sat.
-  - plane_offset: 1  # Establish a cross-plane link in a staggered pattern
-    conditions:      # e.g. when only three links are possible.
-    - eq: [{mod: [rank, 2]}, {mod: [plane, 2]}] # rank % 2 == plane % 2
+~~~ cddl
+constellation-specs = {
+  version: tstr,
+  shells: [+ shell-entry],
+}
 
-- code: S:1210:89:52/4/1
-  link_patterns:
-  - rank_offset: 1   # Establish an in-plane link towards the next sat.
+shell-entry = {
+  code: tstr,  ; Constellation code as specified in this document
+  link-patterns: [* link-pattern],
+}
+
+link-pattern = {
+  (
+    (rank-offset: int, ? plane-offset: int) //
+    (? rank-offset: int, plane-offset: int)
+  ),
+  ? conditions: [* condition],
+}
+
+condition = { eq: [expression, expression] }
+
+expression = int
+           / context-element
+           / operation
+
+context-element = "rank" / "plane"
+
+operation = { mod: [expression, expression] }
 ~~~
-{: #constellation-yaml-example artwork-align="center" artwork-name="syntax" title="Example of YAML document specifying a two-shell constellation"}
+{: #constellation-cddl-def artwork-align="left" artwork-name="syntax" title="CDDL schema for constellation links"}
 
-{{constellation-yaml-example}} specifies a two-shell constellation. The first shell is a Walker Delta shell in which satellites have three links towards neighbours. The second one is a Walker Star pattern with two in-plane links per satellite.
+Each data item specifies a constellation that may be composed of several shells.
+An example specifying a two-shell constellation is given below in Extended
+Diagnostic Notation (EDN) {{RFC8949}}:
 
-These patterns are encoded through the `link_patterns` key. It contains a list of patterns with optional conditions. Each pattern can specify how to reach a neighbour given local plane and rank offsets to establish a bidirectional link. For instance, the first pattern of the first shell specifies that a link is formed with the next satellite in the same orbit.
+~~~ edn
+{
+  "version": "draft-piraux-space-constellation-code-03",
+  "shells": [
+    {
+      "code": "D:1200:55:400/20/19",
+      "link-patterns": [
+        { "rank-offset": 1 },             / in-plane link to the next satellite /
+        {
+          "plane-offset": 1,              / cross-plane link in a staggered pattern /
+          "conditions": [                 / e.g., when only three links are possible /
+            { "eq": [{ "mod": ["rank", 2] }, { "mod": ["plane", 2] }] }
+            / rank % 2 == plane % 2 /
+          ]
+        }
+      ]
+    },
+    {
+      "code": "S:1210:89:52/4/1",
+      "link-patterns": [
+        { "rank-offset": 1 }
+      ]
+    }
+  ]
+}
+~~~
+{: #constellation-edn-example artwork-align="center" artwork-name="example" title="Example constellation-specs data item"}
 
-For each pattern, a list of conditions can be expressed with the `conditions` key. These are evaluated for each satellite within the shell to determine whether the corresponding pattern should be applied to form a link. By applying each patterns to all satellites, the set of links within the constellation shell is established.
+{{constellation-edn-example}} specifies a two-shell constellation. The first shell is a Walker Delta shell in which satellites have three links towards neighbours. The second is a Walker Star pattern with two in-plane links per satellite.
+
+These patterns are encoded through the `link-patterns` key. It contains a list of patterns with optional conditions. Each pattern specifies how to reach a neighbour given local plane and rank offsets to establish a bidirectional link. For instance, the first pattern of the first shell specifies that a link is formed with the next satellite in the same orbit.
+
+For each pattern, a list of conditions can be expressed with the `conditions` key. These are evaluated for each satellite within the shell to determine whether the corresponding pattern should be applied to form a link. By applying each pattern to all satellites, the set of links within the constellation shell is established.
 
 ## Detailed specification
 
-### Top-level keys
-
 `version`
 
-: Indicates the version of this I-D that the YAML document should be interpreted with.
+: Indicates the version of this I-D that the data item should be interpreted with.
 
 `shells`
 
-: A list of shells.
+: A list of shell entries.
 
-### Shell
+### Shell entry
 
 `code`
 
 : The shell code following the specification in {{constellation-code}}.
 
-`link_patterns`
+`link-patterns`
 
-: A list of link patterns.
+: A list of link patterns applied to every satellite in the shell.
 
 ### Link pattern
 
-`rank_offset`
+`rank-offset`
 
 : An integer specifying the offset in rank to reach the neighbour for this link.
 
-`plane_offset`
+`plane-offset`
 
 : An integer specifying the offset in plane to reach the neighbour for this link. When this offset causes the plane index to wrap around to the first plane, the rank index of the target satellite is adjusted according to the phasing factor of the shell.
 
-Both types of offset can be included for a single pattern. When one is absent, it is considered to be equal to zero.
-In addition, they naturally wrap around at the boundaries of a shell.
+At least one of the two offsets MUST be present and non-zero.
+The other defaults to zero when absent.
+They naturally wrap around at the boundaries of a shell.
 
 `conditions`
 
-: A list of conditions that must be met for this link to be added.
+: A list of conditions that must all be met for the corresponding link to be added to a given satellite.
 
 ### Condition
 
-Each condition is a predicate on two expressions encoded as mapping. The predicate is the key while the two expressions form a sequence as the value. This version of the document only specifies the equality predicate indicated by the `eq` key.
+A condition is a predicate applied to two expressions. This version of the document only specifies the equality predicate, indicated by the `eq` key.
 
 ### Expression
 
-It can be an integer, a context element or an operation on two expressions.
-Context elements are strings and include `rank` for the current rank index and `plane` for the current plane index of the satellite considered when evaluating a given link pattern.
+An expression is one of: an integer literal, a context element, or an operation
+on two sub-expressions.
+Context elements are represented by strings and two of them are defined.
+`rank` refers to the current rank index and `plane` refers to the current plane index of the satellite being evaluated.
+This version of the document only specifies the modulo
+operation, indicated by the `mod` key.
 
-An operation is encoded as mapping, with the key defining the type of operation and the value containing a sequence with the two expressions.
-This version of the document only specifies the modulo operation indicated by the `mod` key.
+# Describing ground stations {#ground-stations}
+
+In this section, we describe ground stations using the following CDDL schema
+{{RFC8610}}.
+
+~~~ cddl
+ground-stations-specs = {
+  version: tstr,
+  ground-stations: [+ ground-station],
+}
+
+ground-station = {
+  name: tstr,
+  latitude: float,      ; degrees
+  longitude: float,     ; degrees
+  altitude: float,      ; metres above Earth surface
+  min-elevation: float, ; degrees
+  antennas: uint,
+}
+~~~
+{: #ground-stations-cddl-def artwork-align="left" artwork-name="syntax" title="CDDL schema for ground stations"}
+
+An example specifying a single ground station is as follows:
+
+~~~ json
+{
+  "version": "draft-piraux-space-constellation-code-02",
+  "ground-stations": [
+    {
+      "name": "Charleroi",
+      "latitude": 50.40,
+      "longitude": 4.25,
+      "altitude": 109.0,
+      "min-elevation": 10.0,
+      "antennas": 8
+    }
+  ]
+}
+~~~
+{: #ground-stations-json-example artwork-align="left" artwork-name="example" title="Example ground-stations-specs data item"}
+
+{{ground-stations-json-example}} specifies a single ground station with an associated location. It has a MEA of 10 degrees and 8 antennas that can be used simultaneously.
+
+## Detailed specification
+
+`version`
+
+: Indicates the version of this I-D that the data item should be interpreted with.
+
+`ground-stations`
+
+: A list of ground stations.
+
+### Ground station
+
+`name`
+
+: A string to identify the ground station.
+
+`latitude`
+
+: The latitude of the ground station location, expressed in degrees.
+
+`longitude`
+
+: The longitude of the ground station location, expressed in degrees.
+
+`altitude`
+
+: The altitude of the ground station location, expressed in metres above the Earth's surface.
+
+`min-elevation`
+
+: The Minimum Elevation Angle above which Feeder Links can be established, expressed in degrees.
+
+`antennas`
+
+: The number of antennas available to establish Feeder Links simultaneously.
 
 # Considerations for future versions of this document {#considerations}
 
